@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="БАЗА" />
+<meta name="theme-color" content="#10130e" />
+<meta name="format-detection" content="telephone=no" />
+<title>БАЗА</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%2310130e'/%3E%3Ctext x='90' y='112' text-anchor='middle' font-family='Arial Narrow,sans-serif' font-size='52' fill='%238fb584' letter-spacing='4'%3EБАЗА%3C/text%3E%3C/svg%3E" />
+<style>
+:root {
+  --bg: #10130e; --fg: #eceee8; --card: #181c16; --muted: #1e231c;
+  --muted-fg: #8a8f86; --ok: #8fb584; --warn: #c8946e; --border: #2a2d2a;
+  --shadow: 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+html[data-theme="light"] {
+  --bg: #f1efe4; --fg: #1c1d1a; --card: #fffcf4; --muted: #e6e2d4;
+  --muted-fg: #5c6058; --ok: #2f6b38; --warn: #a05a38; --border: #d4d0c2;
+  --shadow: 0 0 0 1px rgb(28 29 26 / 0.1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100dvh; background: var(--bg); color: var(--fg);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+button, [role="button"] { cursor: pointer; font: inherit; color: inherit; }
+button:disabled { opacity: .4; }
+input, textarea { font: inherit; color: inherit; background: var(--muted); border: 0; border-radius: 8px; }
+.shell {
+  min-height: 100dvh; max-width: 430px; margin: 0 auto;
+  padding: max(12px, env(safe-area-inset-top)) 16px calc(128px + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(780px 360px at 50% -80px, color-mix(in oklab, var(--ok) 26%, transparent), transparent 70%),
+    var(--bg);
+}
+header { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 28px; letter-spacing: .22em; text-decoration: none; color: inherit; }
+h1 { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 36px; letter-spacing: .04em; margin: 8px 0 12px; font-weight: 600; }
+h2 { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted-fg); margin: 18px 0 8px; }
+.card { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; }
+.muted { color: var(--muted-fg); font-size: 14px; line-height: 1.5; }
+.row { display: flex; gap: 8px; align-items: center; }
+.btn { min-height: 44px; border: 0; border-radius: 10px; background: var(--fg); color: var(--bg); padding: 0 14px; font-weight: 600; }
+.btn.ghost { background: var(--muted); color: var(--fg); }
+.btn.ok { background: color-mix(in oklab, var(--ok) 30%, var(--muted)); color: var(--fg); }
+.btn.full { width: 100%; }
+.grid { display: grid; gap: 8px; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal b { text-align: center; font-size: 11px; color: var(--muted-fg); font-weight: 500; padding: 6px 0; }
+.day { min-height: 48px; border: 0; border-radius: 10px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.day.on { background: var(--card); box-shadow: var(--shadow); }
+.day .mark { font-size: 10px; font-weight: 700; color: var(--ok); }
+nav.tab {
+  position: fixed; left: 12px; right: 12px; z-index: 30;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  max-width: 406px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+}
+nav.tab a {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 52px; border-radius: 14px;
+  background: var(--card); box-shadow: var(--shadow);
+  text-align: center; font-size: 13px; font-weight: 600;
+  color: var(--muted-fg); text-decoration: none;
+}
+nav.tab a.active { background: var(--fg); color: var(--bg); }
+.sets { display: grid; gap: 6px; margin-top: 8px; }
+.set { display: grid; grid-template-columns: 44px 1fr 1fr 40px 36px; gap: 5px; align-items: center; }
+.set input { height: 42px; text-align: center; width: 100%; }
+.check { height: 42px; border: 0; border-radius: 8px; background: var(--muted); }
+.check.on { background: var(--ok); color: var(--bg); }
+.del { height: 42px; border: 0; border-radius: 8px; background: transparent; color: var(--muted-fg); font-size: 20px; }
+.timer {
+  position: fixed; left: 12px; right: 12px; z-index: 40;
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  max-width: 406px; margin: 0 auto;
+  background: var(--card);
+  border-radius: 16px; box-shadow: var(--shadow); padding: 10px;
+}
+.chips { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+.chip { height: 48px; border: 0; border-radius: 8px; background: color-mix(in oklab, var(--ok) 18%, var(--muted));
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 20px; }
+.alert {
+  position: fixed; inset: 0; z-index: 60; background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.alert .box { width: min(400px, 100%); background: var(--card); color: var(--fg); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); }
+.big { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 42px; margin: 6px 0 12px; }
+.hidden { display: none !important; }
+.ico { width: 44px; height: 44px; border: 0; background: transparent; color: var(--muted-fg); font-size: 18px; }
+.ex { margin-bottom: 10px; }
+.ex h3 { margin: 0; font-size: 18px; }
+.note { width: 100%; min-height: 44px; padding: 10px; margin-top: 8px; }
+.kind { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in oklab, var(--ok) 25%, var(--muted)); }
+</style>
+</head>
+<body>
+<div class="shell" id="app"></div>
+<nav class="tab">
+  <a href="#/" id="n-cal">Календарь</a>
+  <a href="#/train" id="n-day">Тренировка</a>
+  <a href="#/program" id="n-pro">Программа</a>
+</nav>
+<div id="timer-root"></div>
+<script>
+window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"Понедельник и пятница","blurb":"Тяга + жим, затем изоляция рук. Порядок фиксированный.","exercises":[{"id":"a-pullups","number":1,"name":"Подтягивания с рюкзаком","shortName":"Подтягивания","targetSetCount":2,"targetReps":"6–10","restSec":150,"notes":"Разминка 3 повторения. Рабочих — максимум 1–2, не раздувать до пяти. Если пальцы ноют — пропуск. Негативы только в конце, если отказ.","unit":"reps"},{"id":"a-pushups","number":2,"name":"Отжимания с рюкзаком","shortName":"Отжимания","targetSetCount":3,"targetReps":"8–15","restSec":150,"notes":"Техника важнее веса. Потолок 15 кг, пока не будет 3×10–12 с ровной спиной. Не прыгать на 17,5 / 20. Снять видео спины, если сомневаешься.","unit":"reps"},{"id":"a-rows","number":3,"name":"Тяга гантелей в наклоне (на стульях)","shortName":"Тяга в наклоне","targetSetCount":4,"targetReps":"8–12","restSec":105,"notes":"Спина ровная линейкой, не округлять. Вес не увеличивать — сейчас 11 кг. Ниже опускать руку, полная амплитуда. Все 4 подхода чистые по 10.","unit":"reps"},{"id":"a-triceps","number":4,"name":"Трицепс разгибания из-за головы","shortName":"Трицепс из-за головы","targetSetCount":3,"targetReps":"10–12","restSec":75,"notes":"Полная параллель за головой. После тяжёлых отжиманий начинать с 5 кг, затем 6. Далеко от отжиманий — это нормально: преутомление уже есть, изоляция в конце.","unit":"reps"},{"id":"a-biceps","number":5,"name":"Бицепс гантелями (поочерёдно)","shortName":"Бицепс","targetSetCount":3,"targetReps":"10–12","restSec":75,"notes":"Фикс локоть, полное распрямление. 10 кг чисто. Если связки локтя или бицепса справа ноют — пропуск, не делать сразу после тяжёлой тяги.","unit":"reps"}]},{"kind":"B","title":"Низ + пресс","days":"Среда","blurb":"Задняя цепь, квадрицепс, кор, икры.","exercises":[{"id":"b-rdl","number":1,"name":"Румынская тяга с гантелями","shortName":"Румынская тяга","targetSetCount":3,"targetReps":"8–12","restSec":150,"notes":"Нейтральная спина обязательно. 15 кг каждая гантель. Разминка со своим весом 12 раз.","unit":"reps"},{"id":"b-goblet","number":2,"name":"Кубковый присед (с одной гантелью у груди)","shortName":"Кубковый присед","targetSetCount":3,"targetReps":"10–15","restSec":105,"notes":"15 кг, не 18. Медленный темп + пауза 1 сек внизу. 18 кг вернём, когда 15 × 12 × 3 будут лёгкими и с паузой.","unit":"reps"},{"id":"b-abs","number":3,"name":"Подъём на пресс с блином","shortName":"Пресс с блином","targetSetCount":3,"targetReps":"12–15","restSec":60,"notes":"Блин 10 кг держать перед собой. Сейчас рабочие 12. Цель — дойти до 15–20 без читинга.","unit":"reps"},{"id":"b-legs","number":4,"name":"Подъёмы ног лёжа (полная амплитуда)","shortName":"Подъёмы ног","targetSetCount":3,"targetReps":"20","restSec":60,"notes":"Ноги почти до пола, контроль. Вверху ещё выше поднимать таз. Без виса на турнике.","unit":"reps"},{"id":"b-plank","number":5,"name":"Планка (с рюкзаком или без)","shortName":"Планка","targetSetCount":1,"targetReps":"40–60 сек","restSec":60,"notes":"Можно чередовать обычную и боковую. После неё — икры.","unit":"time"},{"id":"b-calves","number":6,"name":"Подъём на носки стоя","shortName":"Икры","targetSetCount":3,"targetReps":"15","restSec":90,"notes":"Последнее в Б. Полная амплитуда, пауза вверху. Своим весом или с гантелями. 3×15.","unit":"reps"}]}],"sessions":[{"id":"s-2026-07-10","date":"2026-07-10","kind":"A","status":"partial","notes":"Фрагмент: тяга, трицепс. Совет на бицепс — 8 кг 3×10 после лёгкой разминки.","exercises":[{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true}]},{"exerciseId":"a-triceps","note":"После тяжёлых отжиманий вес попроще.","sets":[{"kind":"warmup","reps":8,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"левой только 6 во втором","done":true},{"kind":"work","reps":8,"weightKg":5,"done":true},{"kind":"work","reps":8,"weightKg":5,"done":true}]}]},{"id":"s-2026-07-17","date":"2026-07-17","kind":"A","status":"complete","notes":"Без подтягиваний — связки с обратной стороны локтя. Бицепс после тяги на первом подходе «не хватило мощи».","exercises":[{"exerciseId":"a-pullups","skipped":true,"note":"Связки локтя","sets":[]},{"exerciseId":"a-pushups","note":"Средний хват.","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":12,"weightKg":12.5,"done":true},{"kind":"work","reps":12,"weightKg":12.5,"done":true},{"kind":"work","reps":12,"weightKg":12.5,"done":true},{"kind":"work","reps":8,"weightKg":12.5,"note":"не дожал, добил широким и без рюкзака","done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":12,"weightKg":9,"note":"чуть с читингом","done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"сложно","done":true},{"kind":"work","reps":8,"weightKg":5,"done":true},{"kind":"work","reps":8,"weightKg":5,"done":true},{"kind":"work","reps":8,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","note":"Первый рабочий слабый после тяги.","sets":[{"kind":"warmup","reps":10,"weightKg":9,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":12,"weightKg":8,"done":true}]}]},{"id":"s-2026-07-20","date":"2026-07-20","kind":"A","status":"complete","notes":"Тяга ушла раньше отжиманий — так больше не делать. После подтягиваний сразу отжиматься.","exercises":[{"exerciseId":"a-pullups","note":"След. раз 4×6–7, отдых 2,5 мин.","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":5,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"note":"еле","done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"note":"7 + 8-й с отдышкой","done":true}]},{"exerciseId":"a-rows","note":"Сделано до отжиманий — ошибка порядка.","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":5,"done":true},{"kind":"work","reps":10,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true}]}]},{"id":"s-2026-07-24","date":"2026-07-24","kind":"A","status":"complete","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"note":"последний тяжёлый, но смог","done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":13,"done":true},{"kind":"work","reps":8,"weightKg":13,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"backoff","reps":4,"weightKg":10,"done":true},{"kind":"backoff","reps":3,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":10,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"backoff","reps":10,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":8,"weightKg":9,"done":true}]}]},{"id":"s-2026-07-27","date":"2026-07-27","kind":"A","status":"complete","notes":"Отжимания: не увеличивать вес, пока не будет уверенных 10–12 с ровной спиной на 4 подхода. Снять видео.","exercises":[{"exerciseId":"a-pullups","note":"Уверенно.","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"note":"7-й через 15 сек, 8-й не смог","done":true},{"kind":"work","reps":4,"weightKg":15,"done":true},{"kind":"backoff","reps":4,"weightKg":10,"done":true},{"kind":"backoff","reps":3,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","note":"Тяжело, но сделал.","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":10,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"backoff","reps":9,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"work","reps":8,"weightKg":9,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":6,"weightKg":10,"done":true},{"kind":"backoff","reps":5,"weightKg":9,"note":"добил двумя руками 7","done":true}]}]},{"id":"s-2026-07-29","date":"2026-07-29","kind":"B","status":"complete","exercises":[{"exerciseId":"b-rdl","note":"Максимум 15 кг каждая.","sets":[{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-goblet","sets":[{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true}]},{"exerciseId":"b-abs","sets":[{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true}]},{"exerciseId":"b-legs","sets":[{"kind":"work","reps":15,"done":true},{"kind":"work","reps":20,"done":true},{"kind":"work","reps":20,"done":true}]},{"exerciseId":"b-plank","sets":[{"kind":"work","done":true}]}]},{"id":"s-2026-07-31","date":"2026-07-31","kind":"A","status":"complete","notes":"Отжимания шли плохо. След. раз первый рабочий не сразу 15, а 12,5.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":8,"note":"после большого отдыха","done":true},{"kind":"work","reps":5,"done":true},{"kind":"backoff","reps":3,"note":"через 45 сек","done":true},{"kind":"backoff","reps":1,"note":"через 20 сек + негативы","done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":9,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"backoff","reps":4,"weightKg":10,"done":true},{"kind":"backoff","reps":4,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":10,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":8,"weightKg":6,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"backoff","reps":8,"weightKg":9,"note":"добил двумя 5","done":true}]}]},{"id":"s-2026-08-03","date":"2026-08-03","kind":"A","status":"complete","notes":"Подтягивания: руки уставшие, 3–4 не добивал.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"note":"мини-отдых 10 сек и ещё 2","done":true},{"kind":"work","reps":5,"weightKg":15,"note":"добивка 2+1, без рюкзака 3","done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":12,"weightKg":11,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"backoff","reps":8,"weightKg":4,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true}]}]},{"id":"s-2026-08-05","date":"2026-08-05","kind":"B","status":"complete","exercises":[{"exerciseId":"b-rdl","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-goblet","sets":[{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"backoff","reps":12,"weightKg":0,"note":"пустой четвёртый","done":true}]},{"exerciseId":"b-abs","sets":[{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true}]},{"exerciseId":"b-legs","sets":[{"kind":"work","reps":12,"done":true},{"kind":"work","reps":12,"done":true},{"kind":"work","reps":20,"done":true}]},{"exerciseId":"b-plank","sets":[{"kind":"work","done":true}]}]},{"id":"s-2026-08-13","date":"2026-08-13","kind":"A","status":"complete","notes":"Неделя перерыва до этого. Тяга: вес не увеличивать, сильнее опускать руку.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":6,"note":"негативы после 30 сек","done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"note":"восьмой еле","done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"backoff","reps":3,"weightKg":10,"done":true},{"kind":"backoff","reps":3,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":12,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true}]},{"exerciseId":"a-triceps","note":"Полная параллель за головой.","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"backoff","reps":10,"weightKg":5,"done":true},{"kind":"backoff","reps":5,"weightKg":4,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":8,"weightKg":4,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"note":"с трудом, 4-й не стал","done":true},{"kind":"backoff","reps":6,"weightKg":10,"note":"двумя руками","done":true}]}]},{"id":"s-2026-08-17","date":"2026-08-17","kind":"A","status":"complete","notes":"Ноги в среду пропустил. Бицепс сделал раньше трицепса.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"note":"третий трудно","done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":5,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":12,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":12,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"note":"трудно. След. раз спина ровно, все 4 по 10.","done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"с трудом","done":true},{"kind":"backoff","reps":12,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":8,"weightKg":11,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"note":"чисто, фикс локоть","done":true}]}]},{"id":"s-2026-08-19","date":"2026-08-19","kind":"B","status":"complete","notes":"Кубковый 15 кг вместо 18.","exercises":[{"exerciseId":"b-rdl","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-goblet","note":"15 вместо 18.","nextCue":"15 кг, не 18. Пауза 1 сек внизу.","sets":[{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-abs","sets":[{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true}]},{"exerciseId":"b-legs","sets":[{"kind":"work","reps":12,"done":true},{"kind":"work","reps":12,"done":true},{"kind":"work","reps":20,"done":true}]},{"exerciseId":"b-plank","sets":[{"kind":"work","done":true}]}]},{"id":"s-2026-08-22","date":"2026-08-22","kind":"A","status":"complete","notes":"Бицепс после тяги: связки правой руки побаливают. 17,5 и 20 кг в отжиманиях — выше потолка.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"note":"трудно, один раз отдых 3 мин","done":true},{"kind":"work","reps":5,"done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","nextCue":"Потолок 15 кг. Сначала 3×10–12 с ровной спиной.","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":17.5,"done":true},{"kind":"work","reps":6,"weightKg":20,"done":true},{"kind":"backoff","reps":8,"weightKg":15,"done":true}]},{"exerciseId":"a-rows","nextCue":"Спина линейкой, все 4 по 10 чисто. Вес не поднимать.","sets":[{"kind":"warmup","reps":12,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"note":"трудно. След. раз ровная спина, все 4 по 10.","done":true},{"kind":"work","reps":10,"weightKg":11,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"трудно","done":true},{"kind":"backoff","reps":10,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","note":"Связки справа.","nextCue":"Если связки ноют — пропуск, не сразу после тяги.","sets":[{"kind":"warmup","reps":8,"weightKg":11,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"note":"чисто, фикс локоть","done":true}]}]},{"id":"s-2026-08-24","date":"2026-08-24","kind":"B","status":"open","exercises":[{"exerciseId":"b-rdl","note":"Разминка со своим весом 12 раз. 3 подхода максимальный вес на двух гантелях 12 раз (15 кг каждая). ЛУЧШЕ ДЕЛАТЬ РАЗМИНОЧНЫЙ.","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":false},{"kind":"work","reps":12,"weightKg":15,"done":false},{"kind":"work","reps":12,"weightKg":15,"done":false},{"kind":"work","reps":12,"weightKg":15,"done":false}]},{"exerciseId":"b-goblet","note":"18 кг, 12 раз, 3 подхода (вместо 4)","sets":[{"kind":"work","reps":12,"weightKg":18,"done":false},{"kind":"work","reps":12,"weightKg":18,"done":false},{"kind":"work","reps":12,"weightKg":18,"done":false}]},{"exerciseId":"b-abs","note":"10 кг, 12 раз, 3 подхода","sets":[{"kind":"work","reps":12,"weightKg":10,"done":false},{"kind":"work","reps":12,"weightKg":10,"done":false},{"kind":"work","reps":12,"weightKg":10,"done":false}]},{"exerciseId":"b-legs","note":"2 подхода по 12 раз, 3-й 20 раз","sets":[{"kind":"work","reps":12,"done":false},{"kind":"work","reps":12,"done":false},{"kind":"work","reps":20,"done":false}]},{"exerciseId":"b-plank","note":"1 минута","sets":[{"kind":"work","done":false}]},{"exerciseId":"b-calves","note":"3 подхода с порога в ванной по 15 раз","sets":[{"kind":"work","reps":15,"done":false},{"kind":"work","reps":15,"done":false},{"kind":"work","reps":15,"done":false}]}]}],"cues":{"a-pullups":"Рабочих 1–2, не пять. Негативы только в конце, если отказ.","a-pushups":"Потолок 15 кг. Сначала 3×10–12 с ровной спиной, без 17,5 и 20.","a-rows":"11 кг, спина линейкой, полная амплитуда. Все 4 по 10 чисто.","a-triceps":"После тяжёлых отжиманий начинать с 5 кг, затем 6.","a-biceps":"Если связки справа ноют — пропуск, не сразу после тяжёлой тяги.","b-rdl":"15 кг каждая, нейтральная спина. Разминка со своим весом 12.","b-goblet":"15 кг, не 18. Пауза 1 сек внизу."}};
+</script>
+<script>
+(function () {
+  "use strict";
+
+  const KEY = "baza-file-v1";
+  const DATA = window.BAZA_DATA;
+  const MONTHS = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+  const WD = ["пн","вт","ср","чт","пт","сб","вс"];
+
+  // ----- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ -----
+  function uid() { return Math.random().toString(36).slice(2, 10); }
+  function today() {
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function iso(d) {
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function parseIso(s) {
+    const [y,m,dd] = s.split("-").map(Number);
+    return new Date(y, m-1, dd);
+  }
+  function fmtRest(sec) {
+    const m = Math.floor(sec/60), s = sec % 60;
+    return m + ":" + String(s).padStart(2,"0");
+  }
+  function esc(s) {
+    return String(s || "").replace(/[&<>"']/g, function (c) {
+      if (c === "&") return "\u0026amp;";
+      if (c === "<") return "\u0026lt;";
+      if (c === ">") return "\u0026gt;";
+      if (c === '"') return "\u0026quot;";
+      return "\u0026#39;";
+    });
+  }
+
+  // ----- БЕЗОПАСНОЕ ХРАНИЛИЩЕ -----
+  let memoryStore = {};
+  function saveToStorage(data) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(data));
+      return true;
+    } catch (e) {
+      memoryStore = data;
+      console.warn("localStorage недоступен, данные сохранены в памяти");
+      return false;
+    }
+  }
+  function loadFromStorage() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        memoryStore = parsed;
+        return parsed;
+      }
+      return Object.keys(memoryStore).length ? memoryStore : null;
+    } catch (e) {
+      console.warn("Не удалось прочитать данные из localStorage, используется память");
+      return Object.keys(memoryStore).length ? memoryStore : null;
+    }
+  }
+  function getPersistedData() {
+    return loadFromStorage() || {};
+  }
+
+  // ----- ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ (автоимпорт если пусто) -----
+  let saved = getPersistedData();
+  if (!saved || !saved.sessions || saved.sessions.length === 0) {
+    const imported = DATA.sessions.map(s => {
+      const copy = JSON.parse(JSON.stringify(s));
+      copy.exercises.forEach(e => {
+        (e.sets || []).forEach(st => { if (!st.id) st.id = uid(); });
+      });
+      return copy;
+    });
+    saved = {
+      sessions: imported,
+      custom: [],
+      cues: Object.assign({}, DATA.cues),
+      theme: "auto",
+      restPresets: [60, 90, 150, 180],
+      soundOn: true,
+      chimeId: "default"
+    };
+    saveToStorage(saved);
+    saved = loadFromStorage() || saved;
+  }
+
+  const state = {
+    sessions: saved.sessions || [],
+    custom: saved.custom || [],
+    cues: saved.cues || {},
+    theme: saved.theme || "auto",
+    restPresets: saved.restPresets || [60, 90, 150, 180],
+    soundOn: saved.soundOn !== false,
+    chimeId: saved.chimeId || "default",
+    cal: parseIso(today()),
+    restUntil: 0,
+    restFor: 0,
+    openEx: null,
+    draftMin: "1",
+    draftSec: "30",
+    editPresets: false,
+  };
+
+  function persist() {
+    const data = {
+      sessions: state.sessions,
+      custom: state.custom,
+      cues: state.cues,
+      theme: state.theme,
+      restPresets: state.restPresets,
+      soundOn: state.soundOn,
+      chimeId: state.chimeId,
+    };
+    saveToStorage(data);
+  }
+
+  // ----- ОСТАЛЬНЫЕ ФУНКЦИИ -----
+  function programs() {
+    const over = new Set(state.custom.map(p => p.kind));
+    return DATA.programs.filter(p => !over.has(p.kind)).concat(state.custom);
+  }
+  function prog(kind) { return programs().find(p => p.kind === kind); }
+  function sessionByDate(date) { return state.sessions.find(s => s.date === date); }
+
+  function applyTheme() {
+    let m = state.theme;
+    if (m === "auto") {
+      const h = new Date().getHours();
+      m = (h >= 7 && h < 20) ? "light" : "dark";
+    }
+    document.documentElement.setAttribute("data-theme", m);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", m === "light" ? "#f1efe4" : "#10130e");
+  }
+  applyTheme();
+
+  function route() {
+    const h = (location.hash || "#/").replace(/^#/, "");
+    const parts = h.split("/").filter(Boolean);
+    if (parts[0] === "day" && parts[1]) return { name: "day", date: parts[1] };
+    if (parts[0] === "train") return { name: "day", date: today() };
+    if (parts[0] === "program") return { name: "program" };
+    if (parts[0] === "settings") return { name: "settings" };
+    return { name: "home" };
+  }
+
+  function emptyLogs(kind) {
+    const p = prog(kind);
+    if (!p) return [];
+    return p.exercises.map(e => ({
+      exerciseId: e.id,
+      skipped: false,
+      note: "",
+      nextCue: state.cues[e.id] || "",
+      sets: [
+        { id: uid(), kind: "warmup", reps: "", weightKg: "", done: false },
+        ...Array.from({ length: e.targetSetCount || 3 }, () => ({
+          id: uid(), kind: "work", reps: "", weightKg: "", done: false
+        }))
+      ]
+    }));
+  }
+
+  function startSession(date, kind) {
+    if (sessionByDate(date)) return;
+    state.sessions.push({
+      id: uid(), date, kind, status: "open", notes: "",
+      exercises: emptyLogs(kind)
+    });
+    persist();
+    render();
+  }
+
+  function importJournal() {
+    const have = new Set(state.sessions.map(s => s.date));
+    let n = 0;
+    DATA.sessions.forEach(s => {
+      if (have.has(s.date)) return;
+      const copy = JSON.parse(JSON.stringify(s));
+      copy.exercises.forEach(e => {
+        (e.sets || []).forEach(st => { if (!st.id) st.id = uid(); });
+      });
+      state.sessions.push(copy);
+      n++;
+    });
+    state.cues = Object.assign({}, DATA.cues, state.cues);
+    persist();
+    return n;
+  }
+
+  // ----- АУДИО: единый стандартный звук таймера -----
+  let actx = null, looping = false, loopH = 0, live = [];
+  function unlock() {
+    const C = window.AudioContext || window.webkitAudioContext;
+    if (!C) return;
+    if (!actx) actx = new C();
+    if (actx.state === "suspended") actx.resume();
+  }
+  function tone(f, t, d, g, type) {
+    if (!actx) return;
+    const o = actx.createOscillator(), gn = actx.createGain();
+    o.type = type || "square"; o.frequency.value = f;
+    gn.gain.setValueAtTime(0.0001, t);
+    gn.gain.exponentialRampToValueAtTime(Math.max(0.001, g), t + 0.018);
+    gn.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(gn); gn.connect(actx.destination);
+    o.start(t); o.stop(t + d + 0.03); live.push(o);
+  }
+  function playAlarm() {
+    const t = actx.currentTime + 0.02;
+    const G = 0.5;
+    for (let i = 0; i < 20; i++) {
+      const at = t + i * 0.22;
+      tone(880, at, 0.08, G, "square");
+      tone(1320, at + 0.04, 0.06, 0.2, "sawtooth");
+    }
+    tone(1760, t + 4.4, 0.15, G, "sawtooth");
+    return 4.6;
+  }
+  function stopChime() {
+    looping = false;
+    if (loopH) { clearTimeout(loopH); loopH = 0; }
+    live.splice(0).forEach(o => { try { o.stop(); } catch(e) {} });
+  }
+  function startChime(loop) {
+    unlock();
+    if (!actx) return;
+    stopChime();
+    looping = !!loop;
+    const once = () => {
+      if (loop && !looping) return;
+      const len = playAlarm();
+      if (looping) loopH = setTimeout(once, Math.round(len*1000)+180);
+    };
+    once();
+    try { navigator.vibrate && navigator.vibrate([280,90,520,140,700]); } catch(e) {}
+  }
+
+  function startRest(sec) {
+    unlock();
+    stopChime();
+    state.restFor = Math.max(5, Math.min(1800, Math.round(sec)));
+    state.restUntil = Date.now() + state.restFor * 1000;
+    renderTimer();
+  }
+  function skipRest() {
+    stopChime();
+    state.restUntil = 0;
+    state.restFor = 0;
+    renderTimer();
+  }
+
+  // ----- VIEWS -----
+  function calView() {
+    const d = new Date(state.cal.getFullYear(), state.cal.getMonth(), 1);
+    const start = (d.getDay() + 6) % 7;
+    const days = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+    const cells = [];
+    for (let i=0;i<start;i++) cells.push("<div></div>");
+    for (let i=1;i<=days;i++) {
+      const date = iso(new Date(d.getFullYear(), d.getMonth(), i));
+      const s = sessionByDate(date);
+      const on = date === today() ? "on" : "";
+      const mark = s ? (s.kind === "A" ? "А" : s.kind === "B" ? "Б" : s.kind) : "";
+      cells.push(`<button class="day ${on}" data-go="#/day/${date}"><span>${i}</span>${mark?`<span class="mark">${esc(mark)}</span>`:""}</button>`);
+    }
+    const empty = state.sessions.length === 0;
+    return `
+      <header><a class="logo" href="#/">БАЗА</a><a class="ico" href="#/settings" aria-label="Настройки">⚙</a></header>
+      <h1>Календарь</h1>
+      <div class="row" style="justify-content:space-between;margin-bottom:8px">
+        <button class="btn ghost" data-act="prev-m">←</button>
+        <strong>${MONTHS[d.getMonth()]} ${d.getFullYear()}</strong>
+        <button class="btn ghost" data-act="next-m">→</button>
+      </div>
+      <div class="cal">${WD.map(w=>`<b>${w}</b>`).join("")}${cells.join("")}</div>
+      <p class="muted" style="margin-top:16px">${empty
+        ? "Пока пустой. Нажми день — или загрузи старый журнал в настройках."
+        : "Нажми день, чтобы открыть или записать тренировку."}</p>
+    `;
+  }
+
+  function dayView(date) {
+    const s = sessionByDate(date);
+    const dt = parseIso(date);
+    const title = dt.toLocaleDateString("ru-RU", { day:"numeric", month:"long", year:"numeric", weekday:"long" });
+    if (!s) {
+      return `
+        <header><a class="logo" href="#/">БАЗА</a><a class="ico" href="#/settings">⚙</a></header>
+        <p class="muted"><a href="#/" style="color:inherit">← Календарь</a></p>
+        <h1>${esc(title)}</h1>
+        <p class="muted">Выбери тренировку.</p>
+        <div class="grid">${programs().map(p => `
+          <button class="btn ghost" style="text-align:left;padding:12px" data-start="${p.kind}">
+            <div><strong>${p.kind==="A"?"А":p.kind==="B"?"Б":p.kind} · ${esc(p.title)}</strong></div>
+            <div class="muted">${esc(p.exercises.map(e=>e.shortName||e.name).join(" → "))}</div>
+          </button>`).join("")}</div>
+      `;
+    }
+    const p = prog(s.kind);
+    const byId = Object.fromEntries((p?p.exercises:[]).map(e => [e.id, e]));
+    return `
+      <header><a class="logo" href="#/">БАЗА</a><a class="ico" href="#/settings">⚙</a></header>
+      <p class="muted"><a href="#/" style="color:inherit">← Календарь</a></p>
+      <h1>${esc(title)}</h1>
+      <p><span class="kind">${s.kind==="A"?"А · верх":s.kind==="B"?"Б · низ":esc(s.kind)}</span></p>
+      ${s.exercises.map(log => {
+        const e = byId[log.exerciseId] || { name: log.exerciseId, shortName: log.exerciseId, notes: "", targetReps: "" };
+        const open = state.openEx === log.exerciseId;
+        return `<div class="card ex">
+          <button class="row" style="width:100%;border:0;background:transparent;text-align:left;min-height:44px" data-toggle="${log.exerciseId}">
+            <div style="flex:1">
+              <h3>${esc(e.shortName || e.name)}</h3>
+              <div class="muted">${esc(e.targetReps || "")} ${log.skipped ? "· пропуск" : ""}</div>
+            </div>
+            <span class="muted">${open ? "▴" : "▾"}</span>
+          </button>
+          ${open ? `
+            <p class="muted">${esc(e.notes||"")}</p>
+            ${log.nextCue ? `<p class="muted">В след раз: ${esc(log.nextCue)}</p>` : ""}
+            <div class="sets">
+              ${log.sets.map((st,i) => `
+                <div class="set">
+                  <span class="muted">${st.kind==="warmup"?"разм.":(i)}</span>
+                  <input inputmode="decimal" data-set="${log.exerciseId}:${st.id}:weightKg" placeholder="кг" value="${st.weightKg ?? ""}" />
+                  <input inputmode="numeric" data-set="${log.exerciseId}:${st.id}:reps" placeholder="раз" value="${st.reps ?? ""}" />
+                  <button class="check ${st.done?"on":""}" data-done="${log.exerciseId}:${st.id}">${st.done?"✓":""}</button>
+                  <button class="del" data-del="${log.exerciseId}:${st.id}" aria-label="Убрать подход">×</button>
+                </div>`).join("")}
+            </div>
+            <div class="row" style="margin-top:8px">
+              <button class="btn ghost" data-add="${log.exerciseId}">+ подход</button>
+              <button class="btn ghost" data-skip="${log.exerciseId}">${log.skipped?"Вернуть":"Пропуск"}</button>
+            </div>
+            <textarea class="note" data-cue="${log.exerciseId}" placeholder="Пометка на следующую тренировку">${esc(log.nextCue||"")}</textarea>
+          ` : ""}
+        </div>`;
+      }).join("")}
+      <textarea class="note" data-sess-note placeholder="Заметка на день">${esc(s.notes||"")}</textarea>
+      <div class="row" style="margin-top:12px">
+        <button class="btn full" data-act="save-day">Сохранить день</button>
+      </div>
+    `;
+  }
+
+  function nextKind() {
+    const used = new Set(programs().map(p => p.kind));
+    const letters = "CDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (const ch of letters) if (!used.has(ch)) return ch;
+    return "X" + uid().slice(0,2);
+  }
+  function programView() {
+    return `
+      <header><a class="logo" href="#/">БАЗА</a><a class="ico" href="#/settings">⚙</a></header>
+      <h1>Тренировки</h1>
+      ${programs().map(p => `
+        <div class="card" style="margin-bottom:10px">
+          <h3 style="margin:0 0 6px">${p.kind==="A"?"А":p.kind==="B"?"Б":esc(p.kind)} · ${esc(p.title)}</h3>
+          <p class="muted">${esc(p.days||"")} · ${esc(p.blurb||"")}</p>
+          <ol class="muted">${p.exercises.map(e => `<li>${esc(e.shortName||e.name)} · ${esc(e.targetSetCount)}×${esc(e.targetReps)}</li>`).join("")}</ol>
+        </div>`).join("")}
+      <div class="card">
+        <h3 style="margin:0 0 8px">Новая тренировка</h3>
+        <input id="new-title" placeholder="Название, например Восстановление" style="width:100%;height:44px;padding:0 12px" />
+        <textarea id="new-ex" class="note" placeholder="По одному упражнению на строку&#10;Подъём на носки 3×15"></textarea>
+        <button class="btn full" data-act="new-prog" style="margin-top:8px">Сохранить тренировку</button>
+      </div>
+    `;
+  }
+
+  function settingsView() {
+    return `
+      <header><a class="logo" href="#/">БАЗА</a><a class="ico" href="#/settings">⚙</a></header>
+      <h1>Телефон</h1>
+      <h2>Тема</h2>
+      <div class="chips" style="grid-template-columns:1fr 1fr 1fr">
+        ${[["auto","Авто"],["light","Светлая"],["dark","Тёмная"]].map(([id,l]) =>
+          `<button class="btn ${state.theme===id?"":"ghost"}" data-theme="${id}">${l}</button>`).join("")}
+      </div>
+      <h2>Звук таймера</h2>
+      <p class="muted">Звук ${state.soundOn?"включён":"выключен"}.</p>
+      <button class="btn ghost full" data-act="mute">${state.soundOn?"Выключить звук":"Включить звук"}</button>
+      <h2>Данные</h2>
+      <p class="muted">Журнал живёт в этом файле на телефоне, не в облаке. Записей: ${state.sessions.length}.</p>
+      <div class="grid">
+        <button class="btn full" data-act="import">Загрузить журнал из переписки</button>
+        <button class="btn ghost full" data-act="export">Скачать копию журнала</button>
+      </div>
+      <h2>На iPhone</h2>
+      <p class="muted">Добавьте на рабочий стол через меню браузера → «На экран Домой».</p>
+    `;
+  }
+
+  function render() {
+    const r = route();
+    const app = document.getElementById("app");
+    document.getElementById("n-cal").className = r.name==="home" ? "active" : "";
+    document.getElementById("n-day").className = r.name==="day" ? "active" : "";
+    document.getElementById("n-pro").className = r.name==="program" ? "active" : "";
+    if (r.name === "home") app.innerHTML = calView();
+    else if (r.name === "day") app.innerHTML = dayView(r.date);
+    else if (r.name === "program") app.innerHTML = programView();
+    else app.innerHTML = settingsView();
+    bind(app, r);
+    renderTimer();
+  }
+
+  function bind(root, r) {
+    root.querySelectorAll("[data-go]").forEach(el => el.onclick = () => { location.hash = el.getAttribute("data-go"); });
+    root.querySelectorAll("[data-act]").forEach(el => el.onclick = () => act(el.getAttribute("data-act"), r));
+    root.querySelectorAll("[data-start]").forEach(el => el.onclick = () => startSession(r.date, el.getAttribute("data-start")));
+    root.querySelectorAll("[data-toggle]").forEach(el => el.onclick = () => {
+      const id = el.getAttribute("data-toggle");
+      state.openEx = state.openEx === id ? null : id;
+      render();
+    });
+    root.querySelectorAll("[data-done]").forEach(el => el.onclick = () => {
+      const [eid, sid] = el.getAttribute("data-done").split(":");
+      patchSet(r.date, eid, sid, s => { s.done = !s.done; });
+    });
+    root.querySelectorAll("[data-add]").forEach(el => el.onclick = () => {
+      const eid = el.getAttribute("data-add");
+      const s = sessionByDate(r.date);
+      const log = s.exercises.find(e => e.exerciseId === eid);
+      log.sets.push({ id: uid(), kind: "work", reps: "", weightKg: "", done: false });
+      persist(); render();
+    });
+    root.querySelectorAll("[data-del]").forEach(el => el.onclick = () => {
+      const [eid, sid] = el.getAttribute("data-del").split(":");
+      const s = sessionByDate(r.date);
+      const log = s.exercises.find(e => e.exerciseId === eid);
+      if (log.sets.length < 2) return;
+      log.sets = log.sets.filter(x => x.id !== sid);
+      persist(); render();
+    });
+    root.querySelectorAll("[data-skip]").forEach(el => el.onclick = () => {
+      const eid = el.getAttribute("data-skip");
+      const s = sessionByDate(r.date);
+      const log = s.exercises.find(e => e.exerciseId === eid);
+      log.skipped = !log.skipped;
+      persist(); render();
+    });
+    root.querySelectorAll("[data-set]").forEach(el => el.onchange = el.onblur = () => {
+      const [eid, sid, field] = el.getAttribute("data-set").split(":");
+      patchSet(r.date, eid, sid, s => { s[field] = el.value; });
+    });
+    root.querySelectorAll("[data-cue]").forEach(el => el.onchange = () => {
+      const s = sessionByDate(r.date);
+      const log = s.exercises.find(e => e.exerciseId === el.getAttribute("data-cue"));
+      log.nextCue = el.value;
+      if (el.value) state.cues[log.exerciseId] = el.value;
+      persist();
+    });
+    const sn = root.querySelector("[data-sess-note]");
+    if (sn) sn.onchange = () => { sessionByDate(r.date).notes = sn.value; persist(); };
+    root.querySelectorAll("[data-theme]").forEach(el => el.onclick = () => {
+      state.theme = el.getAttribute("data-theme"); persist(); applyTheme(); render();
+    });
+  }
+
+  function patchSet(date, eid, sid, fn) {
+    const s = sessionByDate(date);
+    const log = s.exercises.find(e => e.exerciseId === eid);
+    const st = log.sets.find(x => x.id === sid);
+    fn(st); persist(); render();
+  }
+
+  function act(name, r) {
+    if (name === "prev-m") { state.cal = new Date(state.cal.getFullYear(), state.cal.getMonth()-1, 1); render(); }
+    if (name === "next-m") { state.cal = new Date(state.cal.getFullYear(), state.cal.getMonth()+1, 1); render(); }
+    if (name === "save-day") {
+      const s = sessionByDate(r.date);
+      if (s) { s.status = "complete"; s.exercises.forEach(e => { if (e.nextCue) state.cues[e.exerciseId] = e.nextCue; }); persist(); }
+      alert("День сохранён на этом телефоне.");
+    }
+    if (name === "mute") { state.soundOn = !state.soundOn; persist(); render(); }
+    if (name === "import") {
+      const n = importJournal();
+      alert(n ? "Загрузил дней: " + n : "Все эти дни уже в журнале.");
+      render();
+    }
+    if (name === "export") {
+      const blob = new Blob([JSON.stringify({ sessions: state.sessions, custom: state.custom, cues: state.cues }, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "baza-" + today() + ".json";
+      a.click();
+    }
+    if (name === "new-prog") {
+      const title = (document.getElementById("new-title").value || "").trim() || "Своя";
+      const lines = (document.getElementById("new-ex").value || "").split("\n").map(s => s.trim()).filter(Boolean);
+      if (!lines.length) { alert("Напиши хотя бы одно упражнение."); return; }
+      const kind = nextKind();
+      state.custom.push({
+        kind, title, days: "когда захочешь", blurb: "Своя", custom: true,
+        exercises: lines.map((line, i) => ({
+          id: kind.toLowerCase() + "-" + uid(),
+          number: i+1, name: line, shortName: line.replace(/\s+\d.*/,"") || line,
+          targetSetCount: 3, targetReps: "8–12", restSec: 90, notes: "", unit: "reps"
+        }))
+      });
+      persist(); render();
+    }
+  }
+
+  let rang = false;
+  function renderTimer() {
+    const r = route();
+    const root = document.getElementById("timer-root");
+    const left = state.restUntil ? Math.max(0, Math.ceil((state.restUntil - Date.now())/1000)) : 0;
+    const running = state.restUntil && left > 0;
+    const done = state.restUntil && left === 0;
+    if (done) {
+      if (!rang) { rang = true; if (state.soundOn) startChime(true); }
+      root.innerHTML = `<div class="alert"><div class="box">
+        <div class="muted">Пауза</div>
+        <div class="big">Пора работать</div>
+        <p class="muted">Играет, пока не выключишь.</p>
+        <button class="btn full" id="stop-rest">Выключить</button>
+      </div></div>`;
+      document.getElementById("stop-rest").onclick = skipRest;
+      return;
+    }
+    rang = false;
+    if (r.name !== "day") { root.innerHTML = ""; return; }
+    if (running) {
+      root.innerHTML = `<div class="timer">
+        <div class="row" style="justify-content:space-between">
+          <div><div class="muted">Отдых</div><div class="big" style="margin:0">${fmtRest(left)}</div></div>
+          <div class="row">
+            <button class="btn ghost" id="plus30">+30 с</button>
+            <button class="btn" id="stop-rest">Стоп</button>
+          </div>
+        </div>
+        <div class="chips" style="margin-top:8px">${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}</div>
+      </div>`;
+      document.getElementById("plus30").onclick = () => startRest(left + 30);
+      document.getElementById("stop-rest").onclick = skipRest;
+      root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
+      return;
+    }
+    if (state.editPresets) {
+      root.innerHTML = `<div class="timer">
+        <div class="row" style="justify-content:space-between"><span class="muted">Свои паузы</span><button class="btn" id="presets-done">Готово</button></div>
+        <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:8px">${state.restPresets.map((sec,i)=>`
+          <div class="row">
+            <button class="btn ghost" data-pd="${i}">−15</button>
+            <strong style="flex:1;text-align:center">${fmtRest(sec)}</strong>
+            <button class="btn ghost" data-pu="${i}">+15</button>
+          </div>`).join("")}</div>
+      </div>`;
+      document.getElementById("presets-done").onclick = () => { state.editPresets = false; persist(); renderTimer(); };
+      root.querySelectorAll("[data-pd]").forEach(b => b.onclick = () => {
+        const i = +b.getAttribute("data-pd");
+        state.restPresets[i] = Math.max(15, state.restPresets[i]-15); renderTimer();
+      });
+      root.querySelectorAll("[data-pu]").forEach(b => b.onclick = () => {
+        const i = +b.getAttribute("data-pu");
+        state.restPresets[i] = Math.min(600, state.restPresets[i]+15); renderTimer();
+      });
+      return;
+    }
+    root.innerHTML = `<div class="timer">
+      <div class="chips">${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}</div>
+      <form id="custom" class="row" style="margin-top:8px">
+        <input id="min" inputmode="numeric" value="${esc(state.draftMin)}" style="height:44px;width:64px;text-align:center" />
+        <span>:</span>
+        <input id="sec" inputmode="numeric" value="${esc(state.draftSec)}" style="height:44px;width:64px;text-align:center" />
+        <button class="btn" style="flex:1">Своё время</button>
+        <button type="button" class="btn ghost" id="edit-p">✎</button>
+      </form>
+    </div>`;
+    root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
+    document.getElementById("edit-p").onclick = () => { state.editPresets = true; renderTimer(); };
+    document.getElementById("custom").onsubmit = (e) => {
+      e.preventDefault();
+      state.draftMin = document.getElementById("min").value;
+      state.draftSec = document.getElementById("sec").value;
+      const m = parseInt(state.draftMin,10)||0;
+      const s = Math.min(59, parseInt(state.draftSec,10)||0);
+      startRest(m*60+s);
+    };
+  }
+
+  setInterval(() => { if (state.restUntil) renderTimer(); }, 250);
+  window.addEventListener("hashchange", render);
+  document.getElementById("n-day").addEventListener("click", (e) => {
+    e.preventDefault(); location.hash = "#/day/" + today();
+  });
+  render();
+})();
+</script>
+</body>
+</html>
