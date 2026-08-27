@@ -94,12 +94,9 @@ h2 { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: v
   font-size: 10px;
   font-weight: 700;
   color: var(--fg);
-  background: var(--ok);
-  border-radius: 4px;
-  padding: 1px 4px;
 }
 .day.has-b .mark {
-  background: var(--warn);
+  color: var(--warn);
 }
 .legend {
   display: flex;
@@ -327,7 +324,6 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
   const MONTHS = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
   const WD = ["пн","вт","ср","чт","пт","сб","вс"];
 
-  // ----- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ -----
   function uid() { return Math.random().toString(36).slice(2, 10); }
   function today() {
     const d = new Date();
@@ -354,7 +350,6 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     });
   }
 
-  // ----- БЕЗОПАСНОЕ ХРАНИЛИЩЕ -----
   let memoryStore = {};
   function saveToStorage(data) {
     try {
@@ -384,31 +379,36 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     return loadFromStorage() || {};
   }
 
-  // ----- ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ -----
   let saved = getPersistedData();
-  if (!saved || !saved.sessions || saved.sessions.length === 0) {
-    const imported = DATA.sessions.map(s => {
-      const copy = JSON.parse(JSON.stringify(s));
-      copy.exercises.forEach(e => {
-        (e.sets || []).forEach(st => { if (!st.id) st.id = uid(); });
-      });
-      return copy;
-    });
+  if (!saved || !Object.prototype.hasOwnProperty.call(saved, 'sessions')) {
     saved = {
-      sessions: imported,
+      sessions: [],
       programs: [],
-      cues: Object.assign({}, DATA.cues),
+      cues: {},
       theme: "auto",
       restPresets: [60, 90, 150, 180],
       soundOn: true,
       chimeId: "default"
     };
+  }
+  const isFirstRun = !saved._initialized;
+  if (isFirstRun) {
+    if (!saved.sessions || saved.sessions.length === 0) {
+      saved.sessions = DATA.sessions.map(s => {
+        const copy = JSON.parse(JSON.stringify(s));
+        copy.exercises.forEach(e => {
+          (e.sets || []).forEach(st => { if (!st.id) st.id = uid(); });
+        });
+        return copy;
+      });
+    }
+    if (!saved.programs || saved.programs.length === 0) {
+      saved.programs = JSON.parse(JSON.stringify(DATA.programs));
+    }
+    saved.cues = Object.assign({}, DATA.cues, saved.cues || {});
+    saved._initialized = true;
     saveToStorage(saved);
     saved = loadFromStorage() || saved;
-  }
-  if (!saved.programs || saved.programs.length === 0) {
-    saved.programs = JSON.parse(JSON.stringify(DATA.programs));
-    saveToStorage(saved);
   }
 
   const state = {
@@ -438,11 +438,11 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
       restPresets: state.restPresets,
       soundOn: state.soundOn,
       chimeId: state.chimeId,
+      _initialized: true
     };
     saveToStorage(data);
   }
 
-  // ----- ОСТАЛЬНЫЕ ФУНКЦИИ -----
   function programs() {
     return state.programs;
   }
@@ -515,16 +515,14 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     return n;
   }
 
-  // ----- АУДИО -----
+  // AUDIO
   let actx = null, looping = false, loopH = 0, live = [];
-
   function unlock() {
     const C = window.AudioContext || window.webkitAudioContext;
     if (!C) return;
     if (!actx) actx = new C();
     if (actx.state === "suspended") actx.resume();
   }
-
   function tone(f, t, d, g, type) {
     if (!actx) return;
     const o = actx.createOscillator(), gn = actx.createGain();
@@ -543,10 +541,9 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     };
     live.push(o);
   }
-
   function playAlarm() {
     if (!actx) {
-      console.warn('AudioContext не создан, звук не будет проигран');
+      console.warn('AudioContext не создан');
       return 0;
     }
     const t = actx.currentTime + 0.02;
@@ -559,17 +556,15 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     tone(1760, t + 4.4, 0.15, G, "sawtooth");
     return 4.6;
   }
-
   function stopChime() {
     looping = false;
     if (loopH) { clearTimeout(loopH); loopH = 0; }
     live.splice(0).forEach(o => { try { o.stop(); } catch(e) {} });
   }
-
   function startChime(loop) {
     unlock();
     if (!actx) {
-      console.warn('Не удалось создать AudioContext, звук недоступен');
+      console.warn('Не удалось создать AudioContext');
       return;
     }
     stopChime();
@@ -584,7 +579,6 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     once();
     try { navigator.vibrate && navigator.vibrate([280,90,520,140,700]); } catch(e) {}
   }
-
   function startRest(sec) {
     unlock();
     stopChime();
@@ -599,7 +593,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     renderTimer();
   }
 
-  // ----- VIEWS -----
+  // VIEWS
   function calView() {
     const d = new Date(state.cal.getFullYear(), state.cal.getMonth(), 1);
     const start = (d.getDay() + 6) % 7;
@@ -810,7 +804,6 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     root.querySelectorAll("[data-theme]").forEach(el => el.onclick = () => {
       state.theme = el.getAttribute("data-theme"); persist(); applyTheme(); render();
     });
-    // Программы
     root.querySelectorAll("[data-edit-program]").forEach(el => {
       el.onclick = () => openProgramEditor(el.getAttribute("data-edit-program"));
     });
@@ -851,7 +844,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     }
   }
 
-  // ----- МОДАЛЬНОЕ ОКНО ПРОГРАММЫ -----
+  // Program editor modal
   let editingKind = null;
   let tempProgram = null;
 
@@ -946,7 +939,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
   }
 
   function saveProgram() {
-    if (!tempProgram.title.trim()) {
+    if (!tempProgram.title || !tempProgram.title.trim()) {
       alert("Введите название тренировки");
       return;
     }
@@ -973,14 +966,15 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
 
   function deleteProgram() {
     if (!editingKind) return;
-    if (!confirm(`Удалить тренировку «${tempProgram.title}»?`)) return;
+    if (!confirm(`Удалить тренировку «${tempProgram.title}»? Связанные с ней записи в календаре также будут удалены.`)) return;
     state.programs = state.programs.filter(p => p.kind !== editingKind);
+    state.sessions = state.sessions.filter(s => s.kind !== editingKind);
     persist();
     closeProgramEditor();
     render();
   }
 
-  // ----- ТАЙМЕР -----
+  // TIMER
   let rang = false;
   function renderTimer() {
     const r = route();
@@ -1041,17 +1035,33 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
           ${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}
         </div>`;
     } else {
-      content = `
-        <div class="chips">
-          ${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}
-        </div>
-        <form id="custom" class="row" style="margin-top:8px">
-          <input id="min" inputmode="numeric" value="${esc(state.draftMin)}" style="height:44px;width:64px;text-align:center" />
-          <span>:</span>
-          <input id="sec" inputmode="numeric" value="${esc(state.draftSec)}" style="height:44px;width:64px;text-align:center" />
-          <button class="btn" style="flex:1">Своё время</button>
-          <button type="button" class="btn ghost" id="edit-p">✎</button>
-        </form>`;
+      if (state.editPresets) {
+        content = `
+          <div class="row" style="justify-content:space-between">
+            <span class="muted">Свои паузы</span>
+            <button class="btn" id="presets-done">Готово</button>
+          </div>
+          <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:8px">
+            ${state.restPresets.map((sec,i)=>`
+              <div class="row">
+                <button class="btn ghost" data-pd="${i}">−15</button>
+                <strong style="flex:1;text-align:center">${fmtRest(sec)}</strong>
+                <button class="btn ghost" data-pu="${i}">+15</button>
+              </div>`).join("")}
+          </div>`;
+      } else {
+        content = `
+          <div class="chips">
+            ${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}
+          </div>
+          <form id="custom" class="row" style="margin-top:8px">
+            <input id="min" inputmode="numeric" value="${esc(state.draftMin)}" style="height:44px;width:64px;text-align:center" />
+            <span>:</span>
+            <input id="sec" inputmode="numeric" value="${esc(state.draftSec)}" style="height:44px;width:64px;text-align:center" />
+            <button class="btn" style="flex:1">Своё время</button>
+            <button type="button" class="btn ghost" id="edit-p">✎</button>
+          </form>`;
+      }
     }
     return `
       <div class="timer-sheet">
@@ -1063,6 +1073,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
   function bindTimerSheet(root, left, running) {
     document.getElementById("close-sheet-btn").onclick = () => {
       state.timerPanelOpen = false;
+      state.editPresets = false;
       renderTimer();
     };
 
@@ -1071,26 +1082,45 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
       document.getElementById("stop-rest").onclick = skipRest;
       root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
     } else {
-      const minInput = document.getElementById("min");
-      const secInput = document.getElementById("sec");
-      if (minInput) minInput.oninput = () => { state.draftMin = minInput.value; };
-      if (secInput) secInput.oninput = () => { state.draftSec = secInput.value; };
+      if (state.editPresets) {
+        const doneBtn = document.getElementById("presets-done");
+        if (doneBtn) doneBtn.onclick = () => {
+          state.editPresets = false;
+          persist();
+          renderTimer();
+        };
+        root.querySelectorAll("[data-pd]").forEach(b => b.onclick = () => {
+          const i = +b.getAttribute("data-pd");
+          state.restPresets[i] = Math.max(15, state.restPresets[i]-15);
+          renderTimer();
+        });
+        root.querySelectorAll("[data-pu]").forEach(b => b.onclick = () => {
+          const i = +b.getAttribute("data-pu");
+          state.restPresets[i] = Math.min(600, state.restPresets[i]+15);
+          renderTimer();
+        });
+      } else {
+        const minInput = document.getElementById("min");
+        const secInput = document.getElementById("sec");
+        if (minInput) minInput.oninput = () => { state.draftMin = minInput.value; };
+        if (secInput) secInput.oninput = () => { state.draftSec = secInput.value; };
 
-      root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
-      const editP = document.getElementById("edit-p");
-      if (editP) editP.onclick = () => { 
-        state.editPresets = true;
-        renderTimer();
-      };
-      const customForm = document.getElementById("custom");
-      if (customForm) customForm.onsubmit = (e) => {
-        e.preventDefault();
-        state.draftMin = document.getElementById("min").value;
-        state.draftSec = document.getElementById("sec").value;
-        const m = parseInt(state.draftMin,10)||0;
-        const s = Math.min(59, parseInt(state.draftSec,10)||0);
-        startRest(m*60+s);
-      };
+        root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
+        const editP = document.getElementById("edit-p");
+        if (editP) editP.onclick = () => { 
+          state.editPresets = true;
+          renderTimer();
+        };
+        const customForm = document.getElementById("custom");
+        if (customForm) customForm.onsubmit = (e) => {
+          e.preventDefault();
+          state.draftMin = document.getElementById("min").value;
+          state.draftSec = document.getElementById("sec").value;
+          const m = parseInt(state.draftMin,10)||0;
+          const s = Math.min(59, parseInt(state.draftSec,10)||0);
+          startRest(m*60+s);
+        };
+      }
     }
   }
 
