@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -10,7 +10,8 @@
 <meta name="theme-color" content="#10130e" />
 <meta name="format-detection" content="telephone=no" />
 <title>БАЗА</title>
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%2310130e'/%3E%3Ctext x='90' y='112' text-anchor='middle' font-family='Arial Narrow,sans-serif' font-size='52' fill='%238fb584' letter-spacing='4'%3EБАЗА%3C/text%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232d3a2a'/%3E%3Cstop offset='100%25' stop-color='%2310130e'/%3E%3C/linearGradient%3E%3ClinearGradient id='metal' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='100%25' stop-color='%23c0c0c0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='url(%23bg)'/%3E%3Cg transform='translate(90,90)'%3E%3Crect x='-8' y='-38' width='16' height='76' rx='6' fill='%238fb584'/%3E%3Crect x='-38' y='-30' width='18' height='24' rx='4' fill='url(%23metal)'/%3E%3Crect x='-28' y='-26' width='12' height='16' rx='3' fill='%23a0a0a0'/%3E%3Crect x='20' y='-30' width='18' height='24' rx='4' fill='url(%23metal)'/%3E%3Crect x='16' y='-26' width='12' height='16' rx='3' fill='%23a0a0a0'/%3E%3C/g%3E%3C/svg%3E" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232d3a2a'/%3E%3Cstop offset='100%25' stop-color='%2310130e'/%3E%3C/linearGradient%3E%3ClinearGradient id='metal' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='100%25' stop-color='%23c0c0c0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='url(%23bg)'/%3E%3Cg transform='translate(90,90)'%3E%3Crect x='-8' y='-38' width='16' height='76' rx='6' fill='%238fb584'/%3E%3Crect x='-38' y='-30' width='18' height='24' rx='4' fill='url(%23metal)'/%3E%3Crect x='-28' y='-26' width='12' height='16' rx='3' fill='%23a0a0a0'/%3E%3Crect x='20' y='-30' width='18' height='24' rx='4' fill='url(%23metal)'/%3E%3Crect x='16' y='-26' width='12' height='16' rx='3' fill='%23a0a0a0'/%3E%3C/g%3E%3C/svg%3E" />
 <style>
 :root {
   --bg: #10130e; --fg: #eceee8; --card: #181c16; --muted: #1e231c;
@@ -23,8 +24,18 @@ html[data-theme="light"] {
   --shadow: 0 0 0 1px rgb(28 29 26 / 0.1);
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; min-height: 100dvh; background: var(--bg); color: var(--fg);
-  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif; }
+html, body {
+  margin: 0; min-height: 100dvh; background: var(--bg); color: var(--fg);
+  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+input, textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
 button, [role="button"] { cursor: pointer; font: inherit; color: inherit; }
 button:disabled { opacity: .4; }
 input, textarea { font: inherit; color: inherit; background: var(--muted); border: 0; border-radius: 8px; }
@@ -45,7 +56,7 @@ h2 { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: v
 .btn { min-height: 44px; border: 0; border-radius: 10px; background: var(--fg); color: var(--bg); padding: 0 14px; font-weight: 600; }
 .btn.ghost { background: var(--muted); color: var(--fg); }
 .btn.ok {
-  background: #3d5a3a; /* fallback */
+  background: #3d5a3a;
   background: color-mix(in oklab, var(--ok) 30%, var(--muted));
   color: var(--fg);
 }
@@ -53,23 +64,96 @@ h2 { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: v
 .grid { display: grid; gap: 8px; }
 .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
 .cal b { text-align: center; font-size: 11px; color: var(--muted-fg); font-weight: 500; padding: 6px 0; }
-.day { min-height: 48px; border: 0; border-radius: 10px; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
-.day.on { background: var(--card); box-shadow: var(--shadow); }
-.day .mark { font-size: 10px; font-weight: 700; color: var(--ok); }
+.day {
+  min-height: 52px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 15px;
+  transition: transform 0.1s ease;
+}
+.day:active { transform: scale(0.95); }
+.day.has-a {
+  background: color-mix(in oklab, var(--ok) 25%, var(--card));
+  border-color: var(--ok);
+}
+.day.has-b {
+  background: color-mix(in oklab, var(--warn) 25%, var(--card));
+  border-color: var(--warn);
+}
+.day.on {
+  outline: 2px solid var(--fg);
+  outline-offset: -2px;
+}
+.day .mark {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--fg);
+  background: var(--ok);
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+.day.has-b .mark {
+  background: var(--warn);
+}
+.legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--muted-fg);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--ok);
+  opacity: 0.5;
+}
+.legend-color.warn {
+  background: var(--warn);
+}
 nav.tab {
-  position: fixed; left: 12px; right: 12px; z-index: 30;
-  bottom: calc(10px + env(safe-area-inset-bottom));
-  max-width: 406px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  position: fixed; left: 0; right: 0; z-index: 30;
+  bottom: calc(0px + env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 8px 8px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  background: transparent;
 }
 nav.tab a {
   display: flex; align-items: center; justify-content: center;
-  min-height: 52px; border-radius: 14px;
-  background: var(--card); box-shadow: var(--shadow);
-  text-align: center; font-size: 13px; font-weight: 600;
-  color: var(--muted-fg); text-decoration: none;
+  min-height: 56px;
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--muted-fg);
+  text-decoration: none;
+  transition: transform 0.1s ease;
 }
-nav.tab a.active { background: var(--fg); color: var(--bg); }
+nav.tab a:active { transform: scale(0.97); }
+nav.tab a.active {
+  background: var(--fg);
+  color: var(--bg);
+}
 .sets { display: grid; gap: 6px; margin-top: 8px; }
 .set { display: grid; grid-template-columns: 44px 1fr 1fr 40px 36px; gap: 5px; align-items: center; }
 .set input { height: 42px; text-align: center; width: 100%; }
@@ -85,14 +169,14 @@ nav.tab a.active { background: var(--fg); color: var(--bg); }
 }
 .chips { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
 .chip {
-  background: #2f3a2c; /* fallback */
+  background: #2f3a2c;
   background: color-mix(in oklab, var(--ok) 18%, var(--muted));
   height: 48px; border: 0; border-radius: 8px;
   font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 20px;
 }
 .alert {
   position: fixed; inset: 0; z-index: 60;
-  background: rgba(16,19,14,0.88); /* fallback тёмной темы */
+  background: rgba(16,19,14,0.88);
   background: color-mix(in oklab, var(--bg) 88%, transparent);
   backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;
 }
@@ -105,8 +189,120 @@ nav.tab a.active { background: var(--fg); color: var(--bg); }
 .note { width: 100%; min-height: 44px; padding: 10px; margin-top: 8px; }
 .kind {
   display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
-  background: #3d5a3a; /* fallback */
+  background: #3d5a3a;
   background: color-mix(in oklab, var(--ok) 25%, var(--muted));
+}
+/* Плавающая кнопка таймера */
+.fab-timer {
+  position: fixed;
+  z-index: 45;
+  right: 16px;
+  bottom: calc(70px + env(safe-area-inset-bottom));
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--card);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3), var(--shadow);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fab-timer:active { transform: scale(0.92); }
+.fab-timer.running {
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 700;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.fab-timer .timer-icon { font-size: 26px; }
+.fab-timer .timer-value { font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+.timer-sheet {
+  position: fixed;
+  z-index: 46;
+  left: 12px;
+  right: 12px;
+  bottom: calc(130px + env(safe-area-inset-bottom));
+  max-width: 406px;
+  margin: 0 auto;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), var(--shadow);
+  padding: 16px;
+  animation: slideUp 0.2s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.timer-sheet .close-sheet {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--muted);
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-fg);
+}
+.timer-sheet .big-time {
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  text-align: center;
+  margin: 8px 0;
+}
+/* Модальное окно */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal .box {
+  width: min(420px, 100%);
+  max-height: 85dvh;
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.modal .box h2 { margin-top: 0; }
+.modal .ex-edit-row {
+  display: grid;
+  grid-template-columns: 1fr 60px 60px 60px 36px;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.modal .ex-edit-row input {
+  height: 40px;
+  padding: 0 8px;
+  width: 100%;
+}
+.modal .btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
 }
 </style>
 </head>
@@ -118,6 +314,7 @@ nav.tab a.active { background: var(--fg); color: var(--bg); }
   <a href="#/program" id="n-pro">Программа</a>
 </nav>
 <div id="timer-root"></div>
+<div id="program-modal" class="modal hidden"></div>
 <script>
 window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"Понедельник и пятница","blurb":"Тяга + жим, затем изоляция рук. Порядок фиксированный.","exercises":[{"id":"a-pullups","number":1,"name":"Подтягивания с рюкзаком","shortName":"Подтягивания","targetSetCount":2,"targetReps":"6–10","restSec":150,"notes":"Разминка 3 повторения. Рабочих — максимум 1–2, не раздувать до пяти. Если пальцы ноют — пропуск. Негативы только в конце, если отказ.","unit":"reps"},{"id":"a-pushups","number":2,"name":"Отжимания с рюкзаком","shortName":"Отжимания","targetSetCount":3,"targetReps":"8–15","restSec":150,"notes":"Техника важнее веса. Потолок 15 кг, пока не будет 3×10–12 с ровной спиной. Не прыгать на 17,5 / 20. Снять видео спины, если сомневаешься.","unit":"reps"},{"id":"a-rows","number":3,"name":"Тяга гантелей в наклоне (на стульях)","shortName":"Тяга в наклоне","targetSetCount":4,"targetReps":"8–12","restSec":105,"notes":"Спина ровная линейкой, не округлять. Вес не увеличивать — сейчас 11 кг. Ниже опускать руку, полная амплитуда. Все 4 подхода чистые по 10.","unit":"reps"},{"id":"a-triceps","number":4,"name":"Трицепс разгибания из-за головы","shortName":"Трицепс из-за головы","targetSetCount":3,"targetReps":"10–12","restSec":75,"notes":"Полная параллель за головой. После тяжёлых отжиманий начинать с 5 кг, затем 6. Далеко от отжиманий — это нормально: преутомление уже есть, изоляция в конце.","unit":"reps"},{"id":"a-biceps","number":5,"name":"Бицепс гантелями (поочерёдно)","shortName":"Бицепс","targetSetCount":3,"targetReps":"10–12","restSec":75,"notes":"Фикс локоть, полное распрямление. 10 кг чисто. Если связки локтя или бицепса справа ноют — пропуск, не делать сразу после тяжёлой тяги.","unit":"reps"}]},{"kind":"B","title":"Низ + пресс","days":"Среда","blurb":"Задняя цепь, квадрицепс, кор, икры.","exercises":[{"id":"b-rdl","number":1,"name":"Румынская тяга с гантелями","shortName":"Румынская тяга","targetSetCount":3,"targetReps":"8–12","restSec":150,"notes":"Нейтральная спина обязательно. 15 кг каждая гантель. Разминка со своим весом 12 раз.","unit":"reps"},{"id":"b-goblet","number":2,"name":"Кубковый присед (с одной гантелью у груди)","shortName":"Кубковый присед","targetSetCount":3,"targetReps":"10–15","restSec":105,"notes":"15 кг, не 18. Медленный темп + пауза 1 сек внизу. 18 кг вернём, когда 15 × 12 × 3 будут лёгкими и с паузой.","unit":"reps"},{"id":"b-abs","number":3,"name":"Подъём на пресс с блином","shortName":"Пресс с блином","targetSetCount":3,"targetReps":"12–15","restSec":60,"notes":"Блин 10 кг держать перед собой. Сейчас рабочие 12. Цель — дойти до 15–20 без читинга.","unit":"reps"},{"id":"b-legs","number":4,"name":"Подъёмы ног лёжа (полная амплитуда)","shortName":"Подъёмы ног","targetSetCount":3,"targetReps":"20","restSec":60,"notes":"Ноги почти до пола, контроль. Вверху ещё выше поднимать таз. Без виса на турнике.","unit":"reps"},{"id":"b-plank","number":5,"name":"Планка (с рюкзаком или без)","shortName":"Планка","targetSetCount":1,"targetReps":"40–60 сек","restSec":60,"notes":"Можно чередовать обычную и боковую. После неё — икры.","unit":"time"},{"id":"b-calves","number":6,"name":"Подъём на носки стоя","shortName":"Икры","targetSetCount":3,"targetReps":"15","restSec":90,"notes":"Последнее в Б. Полная амплитуда, пауза вверху. Своим весом или с гантелями. 3×15.","unit":"reps"}]}],"sessions":[{"id":"s-2026-07-10","date":"2026-07-10","kind":"A","status":"partial","notes":"Фрагмент: тяга, трицепс. Совет на бицепс — 8 кг 3×10 после лёгкой разминки.","exercises":[{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true}]},{"exerciseId":"a-triceps","note":"После тяжёлых отжиманий вес попроще.","sets":[{"kind":"warmup","reps":8,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"левой только 6 во втором","done":true},{"kind":"work","reps":8,"weightKg":5,"done":true},{"kind":"work","reps":8,"weightKg":5,"done":true}]}]},{"id":"s-2026-07-17","date":"2026-07-17","kind":"A","status":"complete","notes":"Без подтягиваний — связки с обратной стороны локтя. Бицепс после тяги на первом подходе «не хватило мощи».","exercises":[{"exerciseId":"a-pullups","skipped":true,"note":"Связки локтя","sets":[]},{"exerciseId":"a-pushups","note":"Средний хват.","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":12,"weightKg":12.5,"done":true},{"kind":"work","reps":12,"weightKg":12.5,"done":true},{"kind":"work","reps":12,"weightKg":12.5,"done":true},{"kind":"work","reps":8,"weightKg":12.5,"note":"не дожал, добил широким и без рюкзака","done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":12,"weightKg":9,"note":"чуть с читингом","done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"сложно","done":true},{"kind":"work","reps":8,"weightKg":5,"done":true},{"kind":"work","reps":8,"weightKg":5,"done":true},{"kind":"work","reps":8,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","note":"Первый рабочий слабый после тяги.","sets":[{"kind":"warmup","reps":10,"weightKg":9,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":12,"weightKg":8,"done":true}]}]},{"id":"s-2026-07-20","date":"2026-07-20","kind":"A","status":"complete","notes":"Тяга ушла раньше отжиманий — так больше не делать. После подтягиваний сразу отжиматься.","exercises":[{"exerciseId":"a-pullups","note":"След. раз 4×6–7, отдых 2,5 мин.","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":5,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"note":"еле","done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"note":"7 + 8-й с отдышкой","done":true}]},{"exerciseId":"a-rows","note":"Сделано до отжиманий — ошибка порядка.","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":5,"done":true},{"kind":"work","reps":10,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":8,"weightKg":8,"done":true},{"kind":"work","reps":10,"weightKg":8,"done":true}]}]},{"id":"s-2026-07-24","date":"2026-07-24","kind":"A","status":"complete","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"note":"последний тяжёлый, но смог","done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":13,"done":true},{"kind":"work","reps":8,"weightKg":13,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"backoff","reps":4,"weightKg":10,"done":true},{"kind":"backoff","reps":3,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":10,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"backoff","reps":10,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":10,"weightKg":9,"done":true},{"kind":"work","reps":8,"weightKg":9,"done":true}]}]},{"id":"s-2026-07-27","date":"2026-07-27","kind":"A","status":"complete","notes":"Отжимания: не увеличивать вес, пока не будет уверенных 10–12 с ровной спиной на 4 подхода. Снять видео.","exercises":[{"exerciseId":"a-pullups","note":"Уверенно.","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"note":"7-й через 15 сек, 8-й не смог","done":true},{"kind":"work","reps":4,"weightKg":15,"done":true},{"kind":"backoff","reps":4,"weightKg":10,"done":true},{"kind":"backoff","reps":3,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","note":"Тяжело, но сделал.","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":10,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"backoff","reps":9,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"work","reps":8,"weightKg":9,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":6,"weightKg":10,"done":true},{"kind":"backoff","reps":5,"weightKg":9,"note":"добил двумя руками 7","done":true}]}]},{"id":"s-2026-07-29","date":"2026-07-29","kind":"B","status":"complete","exercises":[{"exerciseId":"b-rdl","note":"Максимум 15 кг каждая.","sets":[{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-goblet","sets":[{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true}]},{"exerciseId":"b-abs","sets":[{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true}]},{"exerciseId":"b-legs","sets":[{"kind":"work","reps":15,"done":true},{"kind":"work","reps":20,"done":true},{"kind":"work","reps":20,"done":true}]},{"exerciseId":"b-plank","sets":[{"kind":"work","done":true}]}]},{"id":"s-2026-07-31","date":"2026-07-31","kind":"A","status":"complete","notes":"Отжимания шли плохо. След. раз первый рабочий не сразу 15, а 12,5.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":8,"note":"после большого отдыха","done":true},{"kind":"work","reps":5,"done":true},{"kind":"backoff","reps":3,"note":"через 45 сек","done":true},{"kind":"backoff","reps":1,"note":"через 20 сек + негативы","done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":10,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":9,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"backoff","reps":4,"weightKg":10,"done":true},{"kind":"backoff","reps":4,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true},{"kind":"work","reps":10,"weightKg":10,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":10,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":8,"weightKg":6,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"backoff","reps":8,"weightKg":9,"note":"добил двумя 5","done":true}]}]},{"id":"s-2026-08-03","date":"2026-08-03","kind":"A","status":"complete","notes":"Подтягивания: руки уставшие, 3–4 не добивал.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"note":"мини-отдых 10 сек и ещё 2","done":true},{"kind":"work","reps":5,"weightKg":15,"note":"добивка 2+1, без рюкзака 3","done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":12,"weightKg":11,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"backoff","reps":8,"weightKg":4,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true}]}]},{"id":"s-2026-08-05","date":"2026-08-05","kind":"B","status":"complete","exercises":[{"exerciseId":"b-rdl","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-goblet","sets":[{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"work","reps":12,"weightKg":18,"done":true},{"kind":"backoff","reps":12,"weightKg":0,"note":"пустой четвёртый","done":true}]},{"exerciseId":"b-abs","sets":[{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true}]},{"exerciseId":"b-legs","sets":[{"kind":"work","reps":12,"done":true},{"kind":"work","reps":12,"done":true},{"kind":"work","reps":20,"done":true}]},{"exerciseId":"b-plank","sets":[{"kind":"work","done":true}]}]},{"id":"s-2026-08-13","date":"2026-08-13","kind":"A","status":"complete","notes":"Неделя перерыва до этого. Тяга: вес не увеличивать, сильнее опускать руку.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":6,"note":"негативы после 30 сек","done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"note":"восьмой еле","done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"backoff","reps":3,"weightKg":10,"done":true},{"kind":"backoff","reps":3,"weightKg":0,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":12,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true}]},{"exerciseId":"a-triceps","note":"Полная параллель за головой.","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"backoff","reps":10,"weightKg":5,"done":true},{"kind":"backoff","reps":5,"weightKg":4,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":8,"weightKg":4,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"done":true},{"kind":"work","reps":8,"weightKg":10,"note":"с трудом, 4-й не стал","done":true},{"kind":"backoff","reps":6,"weightKg":10,"note":"двумя руками","done":true}]}]},{"id":"s-2026-08-17","date":"2026-08-17","kind":"A","status":"complete","notes":"Ноги в среду пропустил. Бицепс сделал раньше трицепса.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"note":"третий трудно","done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":5,"done":true}]},{"exerciseId":"a-pushups","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":15,"done":true}]},{"exerciseId":"a-rows","sets":[{"kind":"warmup","reps":12,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":12,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"note":"трудно. След. раз спина ровно, все 4 по 10.","done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"с трудом","done":true},{"kind":"backoff","reps":12,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","sets":[{"kind":"warmup","reps":8,"weightKg":11,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"note":"чисто, фикс локоть","done":true}]}]},{"id":"s-2026-08-19","date":"2026-08-19","kind":"B","status":"complete","notes":"Кубковый 15 кг вместо 18.","exercises":[{"exerciseId":"b-rdl","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-goblet","note":"15 вместо 18.","nextCue":"15 кг, не 18. Пауза 1 сек внизу.","sets":[{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true},{"kind":"work","reps":12,"weightKg":15,"done":true}]},{"exerciseId":"b-abs","sets":[{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true},{"kind":"work","reps":12,"weightKg":10,"done":true}]},{"exerciseId":"b-legs","sets":[{"kind":"work","reps":12,"done":true},{"kind":"work","reps":12,"done":true},{"kind":"work","reps":20,"done":true}]},{"exerciseId":"b-plank","sets":[{"kind":"work","done":true}]}]},{"id":"s-2026-08-22","date":"2026-08-22","kind":"A","status":"complete","notes":"Бицепс после тяги: связки правой руки побаливают. 17,5 и 20 кг в отжиманиях — выше потолка.","exercises":[{"exerciseId":"a-pullups","sets":[{"kind":"warmup","reps":3,"done":true},{"kind":"work","reps":6,"done":true},{"kind":"work","reps":8,"done":true},{"kind":"work","reps":8,"note":"трудно, один раз отдых 3 мин","done":true},{"kind":"work","reps":5,"done":true},{"kind":"work","reps":6,"done":true}]},{"exerciseId":"a-pushups","nextCue":"Потолок 15 кг. Сначала 3×10–12 с ровной спиной.","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":8,"weightKg":15,"done":true},{"kind":"work","reps":6,"weightKg":17.5,"done":true},{"kind":"work","reps":6,"weightKg":20,"done":true},{"kind":"backoff","reps":8,"weightKg":15,"done":true}]},{"exerciseId":"a-rows","nextCue":"Спина линейкой, все 4 по 10 чисто. Вес не поднимать.","sets":[{"kind":"warmup","reps":12,"weightKg":6,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"done":true},{"kind":"work","reps":10,"weightKg":11,"note":"трудно. След. раз ровная спина, все 4 по 10.","done":true},{"kind":"work","reps":10,"weightKg":11,"done":true}]},{"exerciseId":"a-triceps","sets":[{"kind":"warmup","reps":12,"weightKg":4,"done":true},{"kind":"work","reps":10,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"done":true},{"kind":"work","reps":8,"weightKg":6,"note":"трудно","done":true},{"kind":"backoff","reps":10,"weightKg":5,"done":true}]},{"exerciseId":"a-biceps","note":"Связки справа.","nextCue":"Если связки ноют — пропуск, не сразу после тяги.","sets":[{"kind":"warmup","reps":8,"weightKg":11,"note":"двумя руками","done":true},{"kind":"work","reps":8,"weightKg":10,"note":"чисто, фикс локоть","done":true}]}]},{"id":"s-2026-08-24","date":"2026-08-24","kind":"B","status":"open","exercises":[{"exerciseId":"b-rdl","note":"Разминка со своим весом 12 раз. 3 подхода максимальный вес на двух гантелях 12 раз (15 кг каждая). ЛУЧШЕ ДЕЛАТЬ РАЗМИНОЧНЫЙ.","sets":[{"kind":"warmup","reps":12,"weightKg":0,"done":false},{"kind":"work","reps":12,"weightKg":15,"done":false},{"kind":"work","reps":12,"weightKg":15,"done":false},{"kind":"work","reps":12,"weightKg":15,"done":false}]},{"exerciseId":"b-goblet","note":"18 кг, 12 раз, 3 подхода (вместо 4)","sets":[{"kind":"work","reps":12,"weightKg":18,"done":false},{"kind":"work","reps":12,"weightKg":18,"done":false},{"kind":"work","reps":12,"weightKg":18,"done":false}]},{"exerciseId":"b-abs","note":"10 кг, 12 раз, 3 подхода","sets":[{"kind":"work","reps":12,"weightKg":10,"done":false},{"kind":"work","reps":12,"weightKg":10,"done":false},{"kind":"work","reps":12,"weightKg":10,"done":false}]},{"exerciseId":"b-legs","note":"2 подхода по 12 раз, 3-й 20 раз","sets":[{"kind":"work","reps":12,"done":false},{"kind":"work","reps":12,"done":false},{"kind":"work","reps":20,"done":false}]},{"exerciseId":"b-plank","note":"1 минута","sets":[{"kind":"work","done":false}]},{"exerciseId":"b-calves","note":"3 подхода с порога в ванной по 15 раз","sets":[{"kind":"work","reps":15,"done":false},{"kind":"work","reps":15,"done":false},{"kind":"work","reps":15,"done":false}]}]}],"cues":{"a-pullups":"Рабочих 1–2, не пять. Негативы только в конце, если отказ.","a-pushups":"Потолок 15 кг. Сначала 3×10–12 с ровной спиной, без 17,5 и 20.","a-rows":"11 кг, спина линейкой, полная амплитуда. Все 4 по 10 чисто.","a-triceps":"После тяжёлых отжиманий начинать с 5 кг, затем 6.","a-biceps":"Если связки справа ноют — пропуск, не сразу после тяжёлой тяги.","b-rdl":"15 кг каждая, нейтральная спина. Разминка со своим весом 12.","b-goblet":"15 кг, не 18. Пауза 1 сек внизу."}};
 </script>
@@ -187,7 +384,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     return loadFromStorage() || {};
   }
 
-  // ----- ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ (автоимпорт если пусто) -----
+  // ----- ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ -----
   let saved = getPersistedData();
   if (!saved || !saved.sessions || saved.sessions.length === 0) {
     const imported = DATA.sessions.map(s => {
@@ -199,7 +396,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     });
     saved = {
       sessions: imported,
-      custom: [],
+      programs: [],
       cues: Object.assign({}, DATA.cues),
       theme: "auto",
       restPresets: [60, 90, 150, 180],
@@ -209,10 +406,14 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     saveToStorage(saved);
     saved = loadFromStorage() || saved;
   }
+  if (!saved.programs || saved.programs.length === 0) {
+    saved.programs = JSON.parse(JSON.stringify(DATA.programs));
+    saveToStorage(saved);
+  }
 
   const state = {
     sessions: saved.sessions || [],
-    custom: saved.custom || [],
+    programs: saved.programs || [],
     cues: saved.cues || {},
     theme: saved.theme || "auto",
     restPresets: saved.restPresets || [60, 90, 150, 180],
@@ -225,12 +426,13 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     draftMin: "1",
     draftSec: "30",
     editPresets: false,
+    timerPanelOpen: false,
   };
 
   function persist() {
     const data = {
       sessions: state.sessions,
-      custom: state.custom,
+      programs: state.programs,
       cues: state.cues,
       theme: state.theme,
       restPresets: state.restPresets,
@@ -242,8 +444,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
 
   // ----- ОСТАЛЬНЫЕ ФУНКЦИИ -----
   function programs() {
-    const over = new Set(state.custom.map(p => p.kind));
-    return DATA.programs.filter(p => !over.has(p.kind)).concat(state.custom);
+    return state.programs;
   }
   function prog(kind) { return programs().find(p => p.kind === kind); }
   function sessionByDate(date) { return state.sessions.find(s => s.date === date); }
@@ -314,7 +515,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     return n;
   }
 
-  // ----- АУДИО: безопасный блок (исправлен) -----
+  // ----- АУДИО -----
   let actx = null, looping = false, loopH = 0, live = [];
 
   function unlock() {
@@ -384,7 +585,6 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     try { navigator.vibrate && navigator.vibrate([280,90,520,140,700]); } catch(e) {}
   }
 
-  // ----- REST TIMER FUNCTIONS -----
   function startRest(sec) {
     unlock();
     stopChime();
@@ -399,7 +599,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     renderTimer();
   }
 
-  // ----- VIEWS (без изменений) -----
+  // ----- VIEWS -----
   function calView() {
     const d = new Date(state.cal.getFullYear(), state.cal.getMonth(), 1);
     const start = (d.getDay() + 6) % 7;
@@ -409,9 +609,14 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     for (let i=1;i<=days;i++) {
       const date = iso(new Date(d.getFullYear(), d.getMonth(), i));
       const s = sessionByDate(date);
-      const on = date === today() ? "on" : "";
+      let classes = "day";
+      if (date === today()) classes += " on";
+      if (s) {
+        if (s.kind === "A") classes += " has-a";
+        else if (s.kind === "B") classes += " has-b";
+      }
       const mark = s ? (s.kind === "A" ? "А" : s.kind === "B" ? "Б" : s.kind) : "";
-      cells.push(`<button class="day ${on}" data-go="#/day/${date}"><span>${i}</span>${mark?`<span class="mark">${esc(mark)}</span>`:""}</button>`);
+      cells.push(`<button class="${classes}" data-go="#/day/${date}"><span>${i}</span>${mark?`<span class="mark">${esc(mark)}</span>`:""}</button>`);
     }
     const empty = state.sessions.length === 0;
     return `
@@ -423,6 +628,10 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
         <button class="btn ghost" data-act="next-m">→</button>
       </div>
       <div class="cal">${WD.map(w=>`<b>${w}</b>`).join("")}${cells.join("")}</div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-color"></span> Тренировка А</div>
+        <div class="legend-item"><span class="legend-color warn"></span> Тренировка Б</div>
+      </div>
       <p class="muted" style="margin-top:16px">${empty
         ? "Пока пустой. Нажми день — или загрузи старый журнал в настройках."
         : "Нажми день, чтобы открыть или записать тренировку."}</p>
@@ -498,22 +707,18 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     for (const ch of letters) if (!used.has(ch)) return ch;
     return "X" + uid().slice(0,2);
   }
+
   function programView() {
     return `
       <header><a class="logo" href="#/">БАЗА</a><a class="ico" href="#/settings">⚙</a></header>
       <h1>Тренировки</h1>
       ${programs().map(p => `
-        <div class="card" style="margin-bottom:10px">
+        <div class="card" style="margin-bottom:10px; cursor:pointer" data-edit-program="${p.kind}">
           <h3 style="margin:0 0 6px">${p.kind==="A"?"А":p.kind==="B"?"Б":esc(p.kind)} · ${esc(p.title)}</h3>
           <p class="muted">${esc(p.days||"")} · ${esc(p.blurb||"")}</p>
           <ol class="muted">${p.exercises.map(e => `<li>${esc(e.shortName||e.name)} · ${esc(e.targetSetCount)}×${esc(e.targetReps)}</li>`).join("")}</ol>
         </div>`).join("")}
-      <div class="card">
-        <h3 style="margin:0 0 8px">Новая тренировка</h3>
-        <input id="new-title" placeholder="Название, например Восстановление" style="width:100%;height:44px;padding:0 12px" />
-        <textarea id="new-ex" class="note" placeholder="По одному упражнению на строку&#10;Подъём на носки 3×15"></textarea>
-        <button class="btn full" data-act="new-prog" style="margin-top:8px">Сохранить тренировку</button>
-      </div>
+      <button class="btn full" data-act="new-program" style="margin-top:8px">+ Создать тренировку</button>
     `;
   }
 
@@ -605,6 +810,10 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     root.querySelectorAll("[data-theme]").forEach(el => el.onclick = () => {
       state.theme = el.getAttribute("data-theme"); persist(); applyTheme(); render();
     });
+    // Программы
+    root.querySelectorAll("[data-edit-program]").forEach(el => {
+      el.onclick = () => openProgramEditor(el.getAttribute("data-edit-program"));
+    });
   }
 
   function patchSet(date, eid, sid, fn) {
@@ -629,7 +838,7 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
       render();
     }
     if (name === "export") {
-      const blob = new Blob([JSON.stringify({ sessions: state.sessions, custom: state.custom, cues: state.cues }, null, 2)], { type: "application/json" });
+      const blob = new Blob([JSON.stringify({ sessions: state.sessions, programs: state.programs, cues: state.cues }, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "baza-" + today() + ".json";
@@ -637,32 +846,160 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
       a.click();
       setTimeout(() => document.body.removeChild(a), 100);
     }
-    if (name === "new-prog") {
-      const title = (document.getElementById("new-title").value || "").trim() || "Своя";
-      const lines = (document.getElementById("new-ex").value || "").split("\n").map(s => s.trim()).filter(Boolean);
-      if (!lines.length) { alert("Напиши хотя бы одно упражнение."); return; }
-      const kind = nextKind();
-      state.custom.push({
-        kind, title, days: "когда захочешь", blurb: "Своя", custom: true,
-        exercises: lines.map((line, i) => ({
-          id: kind.toLowerCase() + "-" + uid(),
-          number: i+1, name: line, shortName: line.replace(/\s+\d.*/,"") || line,
-          targetSetCount: 3, targetReps: "8–12", restSec: 90, notes: "", unit: "reps"
-        }))
-      });
-      persist(); render();
+    if (name === "new-program") {
+      openProgramEditor(null);
     }
   }
 
+  // ----- МОДАЛЬНОЕ ОКНО ПРОГРАММЫ -----
+  let editingKind = null;
+  let tempProgram = null;
+
+  function openProgramEditor(kind) {
+    editingKind = kind;
+    const p = kind ? prog(kind) : null;
+    tempProgram = p
+      ? JSON.parse(JSON.stringify(p))
+      : { kind: "", title: "", days: "", blurb: "", exercises: [] };
+    renderProgramModal();
+  }
+
+  function closeProgramEditor() {
+    editingKind = null;
+    tempProgram = null;
+    document.getElementById("program-modal").classList.add("hidden");
+    document.getElementById("program-modal").innerHTML = "";
+  }
+
+  function renderProgramModal() {
+    const modal = document.getElementById("program-modal");
+    if (!tempProgram) return;
+
+    const isNew = !editingKind;
+    const title = isNew ? "Новая тренировка" : "Редактирование";
+
+    const exRows = tempProgram.exercises.map((ex, index) => `
+      <div class="ex-edit-row">
+        <input type="text" placeholder="Название" value="${esc(ex.name)}" data-ex-name="${index}" />
+        <input type="number" placeholder="Подходы" value="${ex.targetSetCount || 3}" data-ex-sets="${index}" />
+        <input type="text" placeholder="Повторы" value="${esc(ex.targetReps || '8–12')}" data-ex-reps="${index}" />
+        <input type="number" placeholder="Отдых, сек" value="${ex.restSec || 90}" data-ex-rest="${index}" />
+        <button class="del" data-del-ex="${index}" title="Удалить упражнение">×</button>
+      </div>
+    `).join("");
+
+    modal.innerHTML = `
+      <div class="box">
+        <h2>${title}</h2>
+        <input id="prog-title" placeholder="Название тренировки" value="${esc(tempProgram.title)}" style="width:100%;height:44px;padding:0 12px" />
+        <h3 style="margin-top:12px">Упражнения</h3>
+        <div id="ex-list">${exRows || '<p class="muted">Нет упражнений. Добавьте ниже.</p>'}</div>
+        <button class="btn ghost" id="add-ex-btn" style="width:100%;margin-top:8px">+ Добавить упражнение</button>
+        <div class="btn-row">
+          <button class="btn" id="save-prog-btn">Сохранить</button>
+          <button class="btn ghost" id="cancel-prog-btn">Отмена</button>
+          ${!isNew ? `<button class="btn ghost" id="delete-prog-btn" style="color:var(--warn)">Удалить программу</button>` : ""}
+        </div>
+      </div>
+    `;
+    modal.classList.remove("hidden");
+
+    document.getElementById("add-ex-btn").onclick = () => {
+      tempProgram.exercises.push({
+        id: uid(),
+        number: tempProgram.exercises.length + 1,
+        name: "",
+        shortName: "",
+        targetSetCount: 3,
+        targetReps: "8–12",
+        restSec: 90,
+        notes: "",
+        unit: "reps"
+      });
+      renderProgramModal();
+    };
+
+    modal.querySelectorAll("[data-ex-name]").forEach(input => {
+      input.onchange = () => { tempProgram.exercises[+input.dataset.exName].name = input.value; };
+    });
+    modal.querySelectorAll("[data-ex-sets]").forEach(input => {
+      input.onchange = () => { tempProgram.exercises[+input.dataset.exSets].targetSetCount = +input.value || 3; };
+    });
+    modal.querySelectorAll("[data-ex-reps]").forEach(input => {
+      input.onchange = () => { tempProgram.exercises[+input.dataset.exReps].targetReps = input.value; };
+    });
+    modal.querySelectorAll("[data-ex-rest]").forEach(input => {
+      input.onchange = () => { tempProgram.exercises[+input.dataset.exRest].restSec = +input.value || 90; };
+    });
+    modal.querySelectorAll("[data-del-ex]").forEach(btn => {
+      btn.onclick = () => {
+        tempProgram.exercises.splice(+btn.dataset.delEx, 1);
+        renderProgramModal();
+      };
+    });
+
+    document.getElementById("prog-title").onchange = (e) => { tempProgram.title = e.target.value; };
+    document.getElementById("save-prog-btn").onclick = saveProgram;
+    document.getElementById("cancel-prog-btn").onclick = closeProgramEditor;
+    const delBtn = document.getElementById("delete-prog-btn");
+    if (delBtn) delBtn.onclick = deleteProgram;
+  }
+
+  function saveProgram() {
+    if (!tempProgram.title.trim()) {
+      alert("Введите название тренировки");
+      return;
+    }
+    if (!editingKind) {
+      tempProgram.kind = nextKind();
+    }
+    tempProgram.exercises = tempProgram.exercises.map((ex, i) => ({
+      ...ex,
+      number: i + 1,
+      shortName: ex.name.replace(/\s+\d.*/, "") || ex.name,
+      unit: ex.unit || "reps"
+    }));
+
+    const idx = state.programs.findIndex(p => p.kind === tempProgram.kind);
+    if (idx >= 0) {
+      state.programs[idx] = tempProgram;
+    } else {
+      state.programs.push(tempProgram);
+    }
+    persist();
+    closeProgramEditor();
+    render();
+  }
+
+  function deleteProgram() {
+    if (!editingKind) return;
+    if (!confirm(`Удалить тренировку «${tempProgram.title}»?`)) return;
+    state.programs = state.programs.filter(p => p.kind !== editingKind);
+    persist();
+    closeProgramEditor();
+    render();
+  }
+
+  // ----- ТАЙМЕР -----
   let rang = false;
   function renderTimer() {
     const r = route();
     const root = document.getElementById("timer-root");
+
+    if (r.name !== "day") {
+      root.innerHTML = "";
+      return;
+    }
+
     const left = state.restUntil ? Math.max(0, Math.ceil((state.restUntil - Date.now())/1000)) : 0;
     const running = state.restUntil && left > 0;
     const done = state.restUntil && left === 0;
+
     if (done) {
-      if (!rang) { rang = true; if (state.soundOn) startChime(true); }
+      if (!rang) {
+        rang = true;
+        if (state.soundOn) startChime(true);
+      }
       root.innerHTML = `<div class="alert"><div class="box">
         <div class="muted">Пауза</div>
         <div class="big">Пора работать</div>
@@ -673,68 +1010,88 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
       return;
     }
     rang = false;
-    if (r.name !== "day") { root.innerHTML = ""; return; }
+
+    if (state.timerPanelOpen) {
+      root.innerHTML = renderTimerSheet(left, running);
+      bindTimerSheet(root, left, running);
+      return;
+    }
+
+    const btnClass = running ? "fab-timer running" : "fab-timer";
+    const btnContent = running
+      ? `<span class="timer-value">${fmtRest(left)}</span>`
+      : `<span class="timer-icon">⏱</span>`;
+    root.innerHTML = `<button class="${btnClass}" id="fab-timer-btn">${btnContent}</button>`;
+    document.getElementById("fab-timer-btn").onclick = () => {
+      state.timerPanelOpen = true;
+      renderTimer();
+    };
+  }
+
+  function renderTimerSheet(left, running) {
+    let content;
     if (running) {
-      root.innerHTML = `<div class="timer">
+      content = `
+        <div class="big-time">${fmtRest(left)}</div>
         <div class="row" style="justify-content:space-between">
-          <div><div class="muted">Отдых</div><div class="big" style="margin:0">${fmtRest(left)}</div></div>
-          <div class="row">
-            <button class="btn ghost" id="plus30">+30 с</button>
-            <button class="btn" id="stop-rest">Стоп</button>
-          </div>
+          <button class="btn ghost" id="plus30">+30 с</button>
+          <button class="btn" id="stop-rest">Стоп</button>
         </div>
-        <div class="chips" style="margin-top:8px">${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}</div>
+        <div class="chips" style="margin-top:8px">
+          ${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}
+        </div>`;
+    } else {
+      content = `
+        <div class="chips">
+          ${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}
+        </div>
+        <form id="custom" class="row" style="margin-top:8px">
+          <input id="min" inputmode="numeric" value="${esc(state.draftMin)}" style="height:44px;width:64px;text-align:center" />
+          <span>:</span>
+          <input id="sec" inputmode="numeric" value="${esc(state.draftSec)}" style="height:44px;width:64px;text-align:center" />
+          <button class="btn" style="flex:1">Своё время</button>
+          <button type="button" class="btn ghost" id="edit-p">✎</button>
+        </form>`;
+    }
+    return `
+      <div class="timer-sheet">
+        <button class="close-sheet" id="close-sheet-btn">✕</button>
+        ${content}
       </div>`;
+  }
+
+  function bindTimerSheet(root, left, running) {
+    document.getElementById("close-sheet-btn").onclick = () => {
+      state.timerPanelOpen = false;
+      renderTimer();
+    };
+
+    if (running) {
       document.getElementById("plus30").onclick = () => startRest(left + 30);
       document.getElementById("stop-rest").onclick = skipRest;
       root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
-      return;
+    } else {
+      const minInput = document.getElementById("min");
+      const secInput = document.getElementById("sec");
+      if (minInput) minInput.oninput = () => { state.draftMin = minInput.value; };
+      if (secInput) secInput.oninput = () => { state.draftSec = secInput.value; };
+
+      root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
+      const editP = document.getElementById("edit-p");
+      if (editP) editP.onclick = () => { 
+        state.editPresets = true;
+        renderTimer();
+      };
+      const customForm = document.getElementById("custom");
+      if (customForm) customForm.onsubmit = (e) => {
+        e.preventDefault();
+        state.draftMin = document.getElementById("min").value;
+        state.draftSec = document.getElementById("sec").value;
+        const m = parseInt(state.draftMin,10)||0;
+        const s = Math.min(59, parseInt(state.draftSec,10)||0);
+        startRest(m*60+s);
+      };
     }
-    if (state.editPresets) {
-      root.innerHTML = `<div class="timer">
-        <div class="row" style="justify-content:space-between"><span class="muted">Свои паузы</span><button class="btn" id="presets-done">Готово</button></div>
-        <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:8px">${state.restPresets.map((sec,i)=>`
-          <div class="row">
-            <button class="btn ghost" data-pd="${i}">−15</button>
-            <strong style="flex:1;text-align:center">${fmtRest(sec)}</strong>
-            <button class="btn ghost" data-pu="${i}">+15</button>
-          </div>`).join("")}</div>
-      </div>`;
-      document.getElementById("presets-done").onclick = () => { state.editPresets = false; persist(); renderTimer(); };
-      root.querySelectorAll("[data-pd]").forEach(b => b.onclick = () => {
-        const i = +b.getAttribute("data-pd");
-        state.restPresets[i] = Math.max(15, state.restPresets[i]-15); renderTimer();
-      });
-      root.querySelectorAll("[data-pu]").forEach(b => b.onclick = () => {
-        const i = +b.getAttribute("data-pu");
-        state.restPresets[i] = Math.min(600, state.restPresets[i]+15); renderTimer();
-      });
-      return;
-    }
-    root.innerHTML = `<div class="timer">
-      <div class="chips">${state.restPresets.map(s=>`<button class="chip" data-sec="${s}">${fmtRest(s)}</button>`).join("")}</div>
-      <form id="custom" class="row" style="margin-top:8px">
-        <input id="min" inputmode="numeric" value="${esc(state.draftMin)}" style="height:44px;width:64px;text-align:center" />
-        <span>:</span>
-        <input id="sec" inputmode="numeric" value="${esc(state.draftSec)}" style="height:44px;width:64px;text-align:center" />
-        <button class="btn" style="flex:1">Своё время</button>
-        <button type="button" class="btn ghost" id="edit-p">✎</button>
-      </form>
-    </div>`;
-    const minInput = document.getElementById("min");
-    const secInput = document.getElementById("sec");
-    if (minInput) minInput.oninput = () => { state.draftMin = minInput.value; };
-    if (secInput) secInput.oninput = () => { state.draftSec = secInput.value; };
-    root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
-    document.getElementById("edit-p").onclick = () => { state.editPresets = true; renderTimer(); };
-    document.getElementById("custom").onsubmit = (e) => {
-      e.preventDefault();
-      state.draftMin = document.getElementById("min").value;
-      state.draftSec = document.getElementById("sec").value;
-      const m = parseInt(state.draftMin,10)||0;
-      const s = Math.min(59, parseInt(state.draftSec,10)||0);
-      startRest(m*60+s);
-    };
   }
 
   setInterval(() => { if (state.restUntil) renderTimer(); }, 250);
