@@ -44,7 +44,11 @@ h2 { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: v
 .row { display: flex; gap: 8px; align-items: center; }
 .btn { min-height: 44px; border: 0; border-radius: 10px; background: var(--fg); color: var(--bg); padding: 0 14px; font-weight: 600; }
 .btn.ghost { background: var(--muted); color: var(--fg); }
-.btn.ok { background: color-mix(in oklab, var(--ok) 30%, var(--muted)); color: var(--fg); }
+.btn.ok {
+  background: #3d5a3a; /* fallback */
+  background: color-mix(in oklab, var(--ok) 30%, var(--muted));
+  color: var(--fg);
+}
 .btn.full { width: 100%; }
 .grid { display: grid; gap: 8px; }
 .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
@@ -80,10 +84,16 @@ nav.tab a.active { background: var(--fg); color: var(--bg); }
   border-radius: 16px; box-shadow: var(--shadow); padding: 10px;
 }
 .chips { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
-.chip { height: 48px; border: 0; border-radius: 8px; background: color-mix(in oklab, var(--ok) 18%, var(--muted));
-  font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 20px; }
+.chip {
+  background: #2f3a2c; /* fallback */
+  background: color-mix(in oklab, var(--ok) 18%, var(--muted));
+  height: 48px; border: 0; border-radius: 8px;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-size: 20px;
+}
 .alert {
-  position: fixed; inset: 0; z-index: 60; background: color-mix(in oklab, var(--bg) 88%, transparent);
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(16,19,14,0.88); /* fallback тёмной темы */
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
   backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .alert .box { width: min(400px, 100%); background: var(--card); color: var(--fg); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); }
@@ -93,8 +103,11 @@ nav.tab a.active { background: var(--fg); color: var(--bg); }
 .ex { margin-bottom: 10px; }
 .ex h3 { margin: 0; font-size: 18px; }
 .note { width: 100%; min-height: 44px; padding: 10px; margin-top: 8px; }
-.kind { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
-  background: color-mix(in oklab, var(--ok) 25%, var(--muted)); }
+.kind {
+  display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+  background: #3d5a3a; /* fallback */
+  background: color-mix(in oklab, var(--ok) 25%, var(--muted));
+}
 </style>
 </head>
 <body>
@@ -323,11 +336,14 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
     gn.connect(actx.destination);
     o.start(t);
     o.stop(t + d + 0.03);
+    o.onended = () => {
+      const idx = live.indexOf(o);
+      if (idx > -1) live.splice(idx, 1);
+    };
     live.push(o);
   }
 
   function playAlarm() {
-    // Безопасная проверка: если AudioContext не создан – выходим
     if (!actx) {
       console.warn('AudioContext не создан, звук не будет проигран');
       return 0;
@@ -617,7 +633,9 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "baza-" + today() + ".json";
+      document.body.appendChild(a);
       a.click();
+      setTimeout(() => document.body.removeChild(a), 100);
     }
     if (name === "new-prog") {
       const title = (document.getElementById("new-title").value || "").trim() || "Своя";
@@ -703,6 +721,10 @@ window.BAZA_DATA = {"programs":[{"kind":"A","title":"Верх тела","days":"
         <button type="button" class="btn ghost" id="edit-p">✎</button>
       </form>
     </div>`;
+    const minInput = document.getElementById("min");
+    const secInput = document.getElementById("sec");
+    if (minInput) minInput.oninput = () => { state.draftMin = minInput.value; };
+    if (secInput) secInput.oninput = () => { state.draftSec = secInput.value; };
     root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => startRest(+b.getAttribute("data-sec")));
     document.getElementById("edit-p").onclick = () => { state.editPresets = true; renderTimer(); };
     document.getElementById("custom").onsubmit = (e) => {
